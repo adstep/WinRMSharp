@@ -1,0 +1,184 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "adminPassword": {
+        "type": "securestring"
+      },
+      "adminUsername": {
+        "type": "string"
+      },
+      "vmName": {
+        "type": "string"
+      },
+      "vmSize": {
+        "type": "string"
+      },
+      "nsgId": {
+        "type": "string"
+      },
+      "vaultId": {
+        "type": "string"
+      },
+      "certificateUrl": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "addressPrefix": "10.0.0.0/16",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "managedDiskApiVersion": "2017-03-30",
+      "networkInterfacesApiVersion": "2017-04-01",
+      "networkSecurityGroupsApiVersion": "2019-04-01",
+      "publicIPAddressApiVersion": "2017-04-01",
+      "publicIPAddressType": "Dynamic",
+      "subnetAddressPrefix": "10.0.0.0/24",
+      "subnetName": "default",
+      "virtualNetworkResourceGroup": "[resourceGroup().name]",
+      "virtualNetworksApiVersion": "2017-04-01",
+      "vmStorageAccountContainerName": "images"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Network/publicIPAddresses",
+        "apiVersion": "[variables('publicIPAddressApiVersion')]",
+        "name": "[concat(parameters('vmName'), '-ip')]",
+        "location": "[variables('location')]",
+        "properties": {
+          "dnsSettings": {
+            "domainNameLabel": "[concat(parameters('vmName'), '-dns')]"
+          },
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+        }
+      },
+      {
+        "type": "Microsoft.Network/virtualNetworks",
+        "apiVersion": "[variables('virtualNetworksApiVersion')]",
+        "name": "[concat(parameters('vmName'), '-vnet')]",
+        "location": "[variables('location')]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[variables('addressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('subnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('subnetAddressPrefix')]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Network/networkInterfaces",
+        "apiVersion": "[variables('networkInterfacesApiVersion')]",
+        "name": "[concat(parameters('vmName'), '-nic')]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', concat(parameters('vmName'), '-ip'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('vmName'), '-ip'))]",
+                  "properties": {
+                    "deleteOption": "Delete"
+                  }
+                },
+                "subnet": {
+                  "id": "[concat(resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', concat(parameters('vmName'), '-vnet')), '/subnets/', variables('subnetName'))]"
+                }
+              }
+            }
+          ],
+          "networkSecurityGroup": {
+            "id": "[parameters('nsgId')]"
+          }
+        }
+      },
+      {
+        "type": "Microsoft.Compute/virtualMachines",
+        "apiVersion": "2022-03-01",
+        "name": "[parameters('vmName')]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('vmName'), '-nic'))]"
+        ],
+        "properties": {
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": false
+            }
+          },
+          "hardwareProfile": {
+            "vmSize": "[parameters('vmSize')]"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('vmName'), '-nic'))]",
+                "properties": {
+                  "deleteOption": "Delete",
+                  "primary": true
+                }
+              }
+            ]
+          },
+          "osProfile": {
+            "adminPassword": "[parameters('adminPassword')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "computerName": "[parameters('vmName')]",
+            "secrets": [
+              {
+                "sourceVault": {
+                  "id": "[parameters('vaultId')]"
+                },
+                "vaultCertificates": [
+                  {
+                    "certificateStore": "My",
+                    "certificateUrl": "[parameters('certificateUrl')]"
+                  }
+                ]
+              }
+            ],
+            "windowsConfiguration": {
+              "provisionVMAgent": true,
+              "winRM": {
+                "listeners": [
+                  {
+                    "certificateUrl": "[parameters('certificateUrl')]",
+                    "protocol": "https"
+                  }
+                ]
+              }
+            }
+          },
+          "storageProfile": {
+            "imageReference": {
+              "offer": "WindowsServer",
+              "publisher": "MicrosoftWindowsServer",
+              "sku": "2016-Datacenter",
+              "version": "latest"
+            },
+            "osDisk": {
+              "createOption": "FromImage",
+              "managedDisk": {
+                "storageAccountType": "Standard_LRS"
+              },
+              "name": "[concat(parameters('vmName'), '-disk')]",
+              "osType": "Windows",
+              "deleteOption": "Delete"
+            }
+          }
+        }
+      }
+    ]
+  }
