@@ -9,13 +9,39 @@ using System.Text;
 
 namespace WinRMSharp
 {
+    public class ProtocolOptions
+    {
+        public TimeSpan? OperationTimeout { get; set; }
+        public int? MaxEnvelopeSize { get; set; }
+        public string? Locale { get; set; }
+    }
+
     public class Protocol
     {
-        private ITransport _transport;
+        private static TimeSpan DefaultOperationTimeout = TimeSpan.FromSeconds(20);
+        private static int DefaultMaxEnvelopeSize = 20;
+        private static string DefaultLocale = "en-US";
 
-        public Protocol(ITransport transport)
+        private ITransport _transport;
+        private IGuidProvider _guidProvider;
+
+        public TimeSpan OperationTimeout { get; }
+        public int MaxEnvelopeSize { get; }
+        public string Locale { get; }
+
+        internal Protocol(ITransport transport, IGuidProvider guidProvider, ProtocolOptions? options = null)
         {
+            _guidProvider = guidProvider;
             _transport = transport;
+
+            OperationTimeout = options?.OperationTimeout ?? DefaultOperationTimeout;
+            MaxEnvelopeSize = options?.MaxEnvelopeSize ?? DefaultMaxEnvelopeSize;
+            Locale = options?.Locale ?? DefaultLocale;
+        }
+
+        public Protocol(ITransport transport, ProtocolOptions? options = null)
+            : this(transport, new GuidProvider(), options)
+        {
         }
 
         public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null,  Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null)
@@ -33,8 +59,8 @@ namespace WinRMSharp
                 {
                     Shell = new Shell()
                     {
-                        Environment = envVars?.Select(kv => new EnvironmentVariable() { Name = kv.Key, Value = kv.Value }).ToArray(),
-                        //IdleTimeout = (idleTimeout.HasValue) ? idleTimeout.Value : TimeSpan.FromDays(2),
+                        Environment = envVars?.Select(kv => new Variable() { Name = kv.Key, Value = kv.Value }).ToArray(),
+                        IdleTimeout = idleTimeout,
                         InputStreams = inputStream,
                         OutputStreams = outputStream,
                         WorkingDirectory = workingDirectory
@@ -145,6 +171,45 @@ namespace WinRMSharp
             XDocument root = await Send(envelope);
         }
 
+        public async Task<CommandState> PollCommandState(string shellId, string commandId)
+        {
+            StringBuilder stdoutBuilder = new StringBuilder();
+            StringBuilder stderrBuilder = new StringBuilder();
+
+            bool done = false;
+            int statusCode = 0;
+
+            while (!done)
+            {
+                try
+                {
+                    CommandState state = await GetCommandState(shellId, commandId);
+
+                    done = state.Done;
+                    statusCode = state.StatusCode;
+
+                    stdoutBuilder.Append(state.Stdout);
+                    stderrBuilder.Append(state.Stderr);
+
+                    if (!done)
+                        await Task.Delay(TimeSpan.FromMilliseconds(500));
+                } 
+                catch (OperationTimeoutException)
+                {
+                    // Expected exception when waiting for a long-running process with no output
+                    // Spec says to continue to issue requests for the state immediately
+                }
+            }
+
+            return new CommandState()
+            {
+                Stdout = stdoutBuilder.ToString(),
+                Stderr = stderrBuilder.ToString(),
+                StatusCode = statusCode,
+                Done = true
+            };
+        }
+
         public async Task<CommandState> GetCommandState(string shellId, string commandId)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
@@ -213,24 +278,24 @@ namespace WinRMSharp
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
             const string action = "http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete";
 
-            var messageId = Guid.NewGuid().ToString();
+            string messageId = _guidProvider.NewGuid().ToString();
 
-            var envelope = new Envelope()
+            Envelope envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action, shellId, messageId),
+                Header = GetHeader(resourceUri, action, shellId),
                 Body = new Body()
             };
 
             try
             {
-                var root = await Send(envelope);
+                XDocument root = await Send(envelope);
 
-                var relatesTo = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("RelatesTo") ?? false)?.Value;
+                string? relatesTo = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("RelatesTo") ?? false)?.Value;
 
-                //if (relatesTo?.Replace("uuid:", "") != messageId)
-                //{
-                //    throw new WinRMException("");
-                //}
+                if (relatesTo != envelope.Header.MessageID)
+                {
+                    throw new WinRMException("Close response id failed to match request");
+                }
             }
             catch (WSManFaultException ex) when (ex.FaultCode == Fault.SHELL_NOT_FOUND || ex.FaultSubCode == Fault.ERROR_OPERATION_ABORTED)
             {
@@ -250,11 +315,9 @@ namespace WinRMSharp
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
             const string action = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal";
 
-            var messageId = Guid.NewGuid().ToString();
-
             var envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action, shellId, messageId),
+                Header = GetHeader(resourceUri, action, shellId),
                 Body = new Body()
                 {
                     Signal = new Signal()
@@ -274,10 +337,10 @@ namespace WinRMSharp
 
                 var relatesTo = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("RelatesTo") ?? false)?.Value;
 
-                //if (relatesTo?.Replace("uuid:", "") != messageId)
-                //{
-                //    throw new WinRMException("");
-                //}
+                if (relatesTo != envelope.Header.MessageID)
+                {
+                    throw new WinRMException("Close response id failed to match request");
+                }
             }
             catch (WSManFaultException fault) when (fault.FaultCode == Fault.SHELL_NOT_FOUND || fault.FaultSubCode == Fault.ERROR_OPERATION_ABORTED)
             {
@@ -332,6 +395,10 @@ namespace WinRMSharp
                     XElement? wsmanFault = fault.XPathSelectElement("//soapenv:Detail/wsmanfault:WSManFault", nsmgr);
                     string? wsmanFaultCode = wsmanFault?.Attribute("Code")?.Value;
 
+                    if (wsmanFaultCode == WsmanFault.OperationTimeout)
+                        throw new OperationTimeoutException();
+
+
                     string? faultCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Value", nsmgr)?.Value;
                     string? faultSubCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Subcode/soapenv:Value", nsmgr)?.Value;
 
@@ -354,14 +421,9 @@ namespace WinRMSharp
             }
         }
 
-        private Header GetHeader(string resourceUri, string action, string? shellId = null, string? messageId = null)
+        private Header GetHeader(string resourceUri, string action, string? shellId = null)
         {
-            var operationTimeout = TimeSpan.FromSeconds(20);
-
-            if (messageId == null)
-            {
-                messageId = Guid.NewGuid().ToString();
-            }
+            string messageId = _guidProvider.NewGuid().ToString();
 
             var header = new Header()
             {
@@ -377,20 +439,20 @@ namespace WinRMSharp
                 MaxEnvelopeSize = new MaxEnvelopeSize
                 {
                     MustUnderstand = true,
-                    Value = 153600
+                    Value = MaxEnvelopeSize
                 },
                 MessageID = $"uuid:{messageId}",
                 Locale = new Locale()
                 {
                     MustUnderstand = false,
-                    Language = "en-US"
+                    Language = Locale
                 },
                 DataLocale = new Locale()
                 {
                     MustUnderstand = false,
-                    Language = "en-US"
+                    Language = Locale
                 },
-                OperationTimeout = $"PT{operationTimeout.TotalSeconds}S",
+                OperationTimeout = $"PT{OperationTimeout.TotalSeconds}S",
                 ResourceURI = new ResourceURI()
                 {
                     MustUnderstand = true,

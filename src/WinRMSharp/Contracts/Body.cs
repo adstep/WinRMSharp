@@ -25,7 +25,7 @@ namespace WinRMSharp.Contracts
     /// <summary>
     /// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-wsmv/fa0e35c4-e2eb-460e-b915-c6d1ae1aafb8
     /// </summary>
-    public class EnvironmentVariable
+    public class Variable
     {
         [XmlAttribute(AttributeName = "Name")]
         public required string Name { get; set; }
@@ -40,7 +40,7 @@ namespace WinRMSharp.Contracts
     public class Shell
     {
         [XmlArray(Namespace = Namespace.WSMAN_SHELL)]
-        public EnvironmentVariable[]? Environment { get; set; }
+        public Variable[]? Environment { get; set; }
 
         [XmlIgnore]
         public TimeSpan? IdleTimeout { get; set; }

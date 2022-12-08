@@ -9,7 +9,7 @@ namespace WinRMSharp.Tests
         public async Task OpenCloseShell()
         {
             MockClient mockClient = new MockClient();
-            Protocol protocol = mockClient.Protocol.Object;
+            Protocol protocol = new Protocol(mockClient.Transport.Object, mockClient.GuidProvider.Object);
 
             string shellId = await protocol.OpenShell();
             await protocol.CloseShell(shellId);
@@ -20,8 +20,8 @@ namespace WinRMSharp.Tests
         [Fact]
         public async Task RunCommandWithArgsAndCleanup()
         {
-            MockClient mockTransport = new MockClient();
-            Protocol protocol = new Protocol(mockTransport.Transport.Object);
+            MockClient mockClient = new MockClient();
+            Protocol protocol = new Protocol(mockClient.Transport.Object, mockClient.GuidProvider.Object);
 
             string shellId = await protocol.OpenShell();
             string commandId = await protocol.RunCommand(shellId, "ipconfig", new[] { "/all" });
@@ -35,8 +35,8 @@ namespace WinRMSharp.Tests
         [Fact]
         public async Task RunCommandWithoutArgsAndCleanup()
         {
-            MockClient mockTransport = new MockClient();
-            Protocol protocol = new Protocol(mockTransport.Transport.Object);
+            MockClient mockClient = new MockClient();
+            Protocol protocol = new Protocol(mockClient.Transport.Object, mockClient.GuidProvider.Object);
 
             string shellId = await protocol.OpenShell();
             string commandId = await protocol.RunCommand(shellId, "hostname");
@@ -50,8 +50,8 @@ namespace WinRMSharp.Tests
         [Fact]
         public async Task GetCommandState()
         {
-            MockClient mockTransport = new MockClient();
-            Protocol protocol = new Protocol(mockTransport.Transport.Object);
+            MockClient mockClient = new MockClient();
+            Protocol protocol = new Protocol(mockClient.Transport.Object, mockClient.GuidProvider.Object);
 
             string shellId = await protocol.OpenShell();
             string commandId = await protocol.RunCommand(shellId, "ipconfig", new[] { "/all" });
@@ -69,8 +69,8 @@ namespace WinRMSharp.Tests
         [Fact]
         public async Task SendCommandInput()
         {
-            MockClient mockTransport = new MockClient();
-            Protocol protocol = new Protocol(mockTransport.Transport.Object);
+            MockClient mockClient = new MockClient();
+            Protocol protocol = new Protocol(mockClient.Transport.Object, mockClient.GuidProvider.Object);
 
             string shellId = await protocol.OpenShell();
             string commandId = await protocol.RunCommand(shellId, "cmd");

@@ -163,9 +163,9 @@
         },
         "storageProfile": {
           "imageReference": {
-            "offer": "WindowsServer",
-            "publisher": "MicrosoftWindowsServer",
-            "sku": "2016-Datacenter",
+            "offer": "windows-11",
+            "publisher": "microsoftwindowsdesktop",
+            "sku": "win11-22h2-ent",
             "version": "latest"
           },
           "osDisk": {

@@ -2,6 +2,7 @@
 {
     public class TransportException : WinRMException
     {
+        public int Code { get; set; } = 500;
         public string? Content { get; set; }
 
         public TransportException()

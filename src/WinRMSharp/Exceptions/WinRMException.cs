@@ -2,8 +2,6 @@
 {
     public class WinRMException : Exception
     {
-        public int Code { get; set; } = 500;
-
         public WinRMException()
         {
         }
