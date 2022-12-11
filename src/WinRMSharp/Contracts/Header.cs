@@ -2,6 +2,7 @@
 
 namespace WinRMSharp.Contracts
 {
+
     public class Header
     {
         [XmlElement(Namespace = Namespace.ADDRESSING)]

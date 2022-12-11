@@ -18,12 +18,12 @@ namespace WinRMSharp
 
     public class Protocol
     {
-        private static TimeSpan DefaultOperationTimeout = TimeSpan.FromSeconds(20);
-        private static int DefaultMaxEnvelopeSize = 20;
-        private static string DefaultLocale = "en-US";
+        private static readonly TimeSpan DefaultOperationTimeout = TimeSpan.FromSeconds(20);
+        private static readonly int DefaultMaxEnvelopeSize = 153600;
+        private static readonly string DefaultLocale = "en-US";
 
-        private ITransport _transport;
-        private IGuidProvider _guidProvider;
+        private readonly ITransport _transport;
+        private readonly IGuidProvider _guidProvider;
 
         public TimeSpan OperationTimeout { get; }
         public int MaxEnvelopeSize { get; }
@@ -374,7 +374,7 @@ namespace WinRMSharp
 
                 try
                 {
-                    root = Xml.Parse(ex.Content);
+                    root = Xml.Parse(ex?.Content);
                 }
                 catch (Exception)
                 {

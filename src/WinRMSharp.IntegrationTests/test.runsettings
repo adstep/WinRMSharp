@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <RunConfiguration>
+        <EnvironmentVariables>
+            <WINRM_BASE_URL></WINRM_BASE_URL>
+            <WINRM_USERNAME></WINRM_USERNAME>
+            <WINRM_PASSWORD></WINRM_PASSWORD>
+        </EnvironmentVariables>
+    </RunConfiguration>
+</RunSettings>

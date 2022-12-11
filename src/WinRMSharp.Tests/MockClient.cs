@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using Moq;
+﻿using Moq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using WinRMSharp.Utils;

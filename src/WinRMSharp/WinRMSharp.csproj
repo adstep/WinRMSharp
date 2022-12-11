@@ -1,10 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+    <Product>WinRMSharp</Product>
+    <Company>Adam Stephenson</Company>
+    <Copyright>Copyright © 2022</Copyright>
+    <PackageId>WinRMSharp</PackageId>
+    <Authors>Adam Stephenson</Authors>
+    <AssemblyName>WinRMSharp</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <Version>$(WinRMVersion)</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/adstep/WinRMSharp</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <AssemblyVersion>$(WinRMVersion)</AssemblyVersion>
+    <FileVersion>$(WinRMVersion)</FileVersion>
+		<PackageTags>WinRM</PackageTags>
+    <LangVersion>11.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PolySharp" Version="1.8.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
@@ -13,5 +35,9 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).IntegrationTests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="..\..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>

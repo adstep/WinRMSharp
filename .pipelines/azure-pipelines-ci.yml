@@ -1,0 +1,13 @@
+name:
+  WinRMSharp CI
+
+trigger:
+- main
+
+jobs:
+- template: .pipelines/azure-pipelines-job-template.yml
+  parameters:
+    os: windows
+    architecture: x64
+    frameworks: [netstandard2.0, netstandard2.1, netcoreapp3.1, net5.0, net6.0, net7.0]
+    publishBuild: true

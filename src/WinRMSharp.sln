@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinRMSharp.IntegrationTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinRMSharp.Demo", "WinRMSharp.Demo\WinRMSharp.Demo.csproj", "{196E1C3A-F0B9-4BC2-A73A-36564079E3E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Client", "WinRMSharp.Examples\Example.Client\Example.Client.csproj", "{4F8EC118-6148-4F9F-A56E-F5B5B2F31A45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Client", "WinRMSharp.Examples\Example.Client\Example.Client.csproj", "{4F8EC118-6148-4F9F-A56E-F5B5B2F31A45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Protocol", "WinRMSharp.Examples\Example.Protocol\Example.Protocol.csproj", "{6984791A-5357-434D-9E55-3CE5E68E5771}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Protocol", "WinRMSharp.Examples\Example.Protocol\Example.Protocol.csproj", "{6984791A-5357-434D-9E55-3CE5E68E5771}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,57 @@
+parameters:
+- name: os
+  type: string
+  values: [windows]
+- name: architecture
+  type: string
+  values: [x64]
+- name: frameworks
+  type: object
+- name: buildConfiguration
+  type: string
+  default: Release
+- name: publishBuild
+  type: boolean
+  default: false
+
+jobs:
+- job: ${{parameters.os}}_${{parameters.architecture}}
+  displayName: ${{format('{0} {1}', parameters.os, parameters.architecture)}}
+
+  pool:
+    vmImage: "${{parameters.os}}-latest"
+
+  steps:
+
+  - ${{ each framework in parameters.frameworks }}:
+    - ${{ if not(contains(framework, 'netstandard')) }}:
+      - task: UseDotNet@2
+        displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}} Runtime"
+        inputs:
+          version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
+
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build'
+    inputs:
+      command: 'build' # `dotnet build` implicitly runs `dotnet restore` as well
+      projects: 'src/WinRMSharp.sln'
+      arguments: "--configuration ${{parameters.buildConfiguration}}"
+
+  - ${{ each framework in parameters.frameworks }}:
+    - ${{ if not(contains(framework, 'netstandard')) }}:
+      - task: DotNetCoreCLI@2
+        displayName: "Test ${{framework}}"
+        condition: succeededOrFailed()
+        inputs:
+          command: test
+          projects:  'src/WinRMSharp.Tests'
+          arguments: '--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura /p:ExcludeByFile=\"**/*.g.cs\"'
+          publishTestResults: true
+          testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
+
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage report'
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+  
