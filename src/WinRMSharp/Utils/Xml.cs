@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using System.Xml.Serialization;
 using WinRMSharp.Contracts;
 
@@ -16,11 +15,6 @@ namespace WinRMSharp.Utils
                 serializer.Serialize(textWriter, obj);
                 return textWriter.ToString();
             }
-        }
-
-        public static XDocument Load(this Stream stream)
-        {
-            return XDocument.Load(new XmlTextReader(stream));
         }
 
         public static XDocument Parse(this string text)

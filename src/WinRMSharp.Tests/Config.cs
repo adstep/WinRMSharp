@@ -692,5 +692,326 @@ $$"""
 		<rsp:SignalResponse/>
 	</s:Body>
 </s:Envelope>";
+
+		public const string OPERATION_TIMEOUT_REQUEST =
+$$"""
+<env:Envelope
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd"
+	xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd"
+	xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
+	xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config"
+	xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+	<env:Header>
+		<a:To>http://windows-host:5985/wsman</a:To>
+		<a:ReplyTo>
+			<a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+		</a:ReplyTo>
+		<w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+		<a:MessageID>uuid:11111111-1111-1111-1111-111111111111</a:MessageID>
+		<w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+		<p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+		<w:OperationTimeout>PT20S</w:OperationTimeout>
+		<w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+		<a:Action mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command</a:Action>
+		<w:OptionSet>
+			<w:Option Name="WINRS_CONSOLEMODE_STDIN">TRUE</w:Option>
+			<w:Option Name="WINRS_SKIP_CMD_SHELL">FALSE</w:Option>
+		</w:OptionSet>
+		<w:SelectorSet>
+			<w:Selector Name="ShellId">11111111-1111-1111-1111-111111111113</w:Selector>
+		</w:SelectorSet>
+	</env:Header>
+	<env:Body>
+		<rsp:CommandLine>
+			<rsp:Command>powershell -Command Start-Sleep -s 40</rsp:Command>
+		</rsp:CommandLine>
+	</env:Body>
+</env:Envelope>
+""";
+
+		public const string OPERATION_TIMEOUT_RESPONSE =
+$$"""
+<s:Envelope xml:lang="en-US"
+	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+	<s:Header>
+		<a:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandResponse</a:Action>
+		<a:MessageID>uuid:DFC09822-5AF3-4E7C-AEF7-B3699B019595</a:MessageID>
+		<a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+		<a:RelatesTo>uuid:11111111-1111-1111-1111-111111111111</a:RelatesTo>
+	</s:Header>
+	<s:Body>
+		<rsp:CommandResponse>
+			<rsp:CommandId>11111111-1111-1111-1111-111111111134</rsp:CommandId>
+		</rsp:CommandResponse>
+	</s:Body>
+</s:Envelope>
+""";
+
+		public const string OPERATION_TIMEOUT_GET_0_REQUEST =
+$$"""
+<env:Envelope
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd"
+	xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd"
+	xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
+	xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config"
+	xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+	<env:Header>
+		<a:To>http://windows-host:5985/wsman</a:To>
+		<a:ReplyTo>
+			<a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+		</a:ReplyTo>
+		<w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+		<a:MessageID>uuid:11111111-1111-1111-1111-111111111111</a:MessageID>
+		<w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+		<p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+		<w:OperationTimeout>PT20S</w:OperationTimeout>
+		<w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+		<a:Action mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Receive</a:Action>
+		<w:SelectorSet>
+			<w:Selector Name="ShellId">11111111-1111-1111-1111-111111111113</w:Selector>
+		</w:SelectorSet>
+	</env:Header>
+	<env:Body>
+		<rsp:Receive>
+			<rsp:DesiredStream CommandId="11111111-1111-1111-1111-111111111134">stdout stderr</rsp:DesiredStream>
+		</rsp:Receive>
+	</env:Body>
+</env:Envelope>
+""";
+
+        public const string OPERATION_TIMEOUT_GET_0_RESPONSE =
+$$"""
+<s:Envelope xml:lang="en-US"
+	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:e="http://schemas.xmlsoap.org/ws/2004/08/eventing"
+	xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+	<s:Header>
+		<a:Action>http://schemas.dmtf.org/wbem/wsman/1/wsman/fault</a:Action>
+		<a:MessageID>uuid:D98EC41B-42DA-4147-818E-698CC364A820</a:MessageID>
+		<a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+		<a:RelatesTo>uuid:11111111-1111-1111-1111-111111111111</a:RelatesTo>
+	</s:Header>
+	<s:Body>
+		<s:Fault>
+			<s:Code>
+				<s:Value>s:Receiver</s:Value>
+				<s:Subcode>
+					<s:Value>w:TimedOut</s:Value>
+				</s:Subcode>
+			</s:Code>
+			<s:Reason>
+				<s:Text xml:lang="en-US">The WS-Management service cannot complete the operation within the time specified in OperationTimeout.  </s:Text>
+			</s:Reason>
+			<s:Detail>
+				<f:WSManFault
+					xmlns:f="http://schemas.microsoft.com/wbem/wsman/1/wsmanfault" Code="2150858793" Machine="windows-host">
+					<f:Message>The WS-Management service cannot complete the operation within the time specified in OperationTimeout.  </f:Message>
+				</f:WSManFault>
+			</s:Detail>
+		</s:Fault>
+	</s:Body>
+</s:Envelope>
+""";
+
+        public const string OPERATION_TIMEOUT_GET_1_REQUEST =
+$$"""
+<env:Envelope
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd"
+	xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd"
+	xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
+	xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config"
+	xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+	<env:Header>
+		<a:To>http://windows-host:5985/wsman</a:To>
+		<a:ReplyTo>
+			<a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+		</a:ReplyTo>
+		<w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+		<a:MessageID>uuid:11111111-1111-1111-1111-111111111112</a:MessageID>
+		<w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+		<p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+		<w:OperationTimeout>PT20S</w:OperationTimeout>
+		<w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+		<a:Action mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Receive</a:Action>
+		<w:SelectorSet>
+			<w:Selector Name="ShellId">11111111-1111-1111-1111-111111111113</w:Selector>
+		</w:SelectorSet>
+	</env:Header>
+	<env:Body>
+		<rsp:Receive>
+			<rsp:DesiredStream CommandId="11111111-1111-1111-1111-111111111134">stdout stderr</rsp:DesiredStream>
+		</rsp:Receive>
+	</env:Body>
+</env:Envelope>
+""";
+
+        public const string OPERATION_TIMEOUT_GET_1_RESPONSE =
+$$"""
+<s:Envelope xml:lang="en-US"
+	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+	<s:Header>
+		<a:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/ReceiveResponse</a:Action>
+		<a:MessageID>uuid:B7258081-489D-4081-B08B-54E61776844F</a:MessageID>
+		<a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+		<a:RelatesTo>uuid:11111111-1111-1111-1111-111111111112</a:RelatesTo>
+	</s:Header>
+	<s:Body>
+		<rsp:ReceiveResponse>
+			<rsp:Stream Name="stdout" CommandId="11111111-1111-1111-1111-111111111134" End="true"></rsp:Stream>
+			<rsp:Stream Name="stderr" CommandId="11111111-1111-1111-1111-111111111134" End="true"></rsp:Stream>
+			<rsp:CommandState CommandId="11111111-1111-1111-1111-111111111134" State="http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandState/Done">
+				<rsp:ExitCode>0</rsp:ExitCode>
+			</rsp:CommandState>
+		</rsp:ReceiveResponse>
+	</s:Body>
+</s:Envelope>
+""";
+
+        public const string OPERATION_TIMEOUT =
+$$"""
+<s:Envelope 
+	xml:lang="en-US"
+	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:e="http://schemas.xmlsoap.org/ws/2004/08/eventing"
+	xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+	<s:Header>
+		<a:Action>http://schemas.dmtf.org/wbem/wsman/1/wsman/fault</a:Action>
+		<a:MessageID>uuid:D6A43602-1E80-4371-A7D5-49619CB839EE</a:MessageID>
+		<a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+		<a:RelatesTo>uuid:607e3715-d540-41ad-9cb8-5341436e6bbf</a:RelatesTo>
+	</s:Header>
+	<s:Body>
+		<s:Fault>
+			<s:Code>
+				<s:Value>s:Receiver</s:Value>
+				<s:Subcode>
+					<s:Value>w:TimedOut</s:Value>
+				</s:Subcode>
+			</s:Code>
+			<s:Reason>
+				<s:Text xml:lang="en-US">The WS-Management service cannot complete the operation within the time specified in OperationTimeout.  </s:Text>
+			</s:Reason>
+			<s:Detail>
+				<f:WSManFault
+					xmlns:f="http://schemas.microsoft.com/wbem/wsman/1/wsmanfault" Code="2150858793" Machine="windows-host">
+					<f:Message>The WS-Management service cannot complete the operation within the time specified in OperationTimeout.  </f:Message>
+				</f:WSManFault>
+			</s:Detail>
+		</s:Fault>
+	</s:Body>
+</s:Envelope>
+""";
+
+		public const string CLOSE_COMMAND_FAULT_REQUEST =
+$$"""
+<env:Envelope
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd"
+	xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd"
+	xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
+	xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config"
+	xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+	<env:Header>
+		<a:To>http://windows-host:5985/wsman</a:To>
+		<a:ReplyTo>
+			<a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+		</a:ReplyTo>
+		<w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+		<a:MessageID>uuid:11111111-1111-1111-1111-111111111111</a:MessageID>
+		<w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+		<p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+		<w:OperationTimeout>PT20S</w:OperationTimeout>
+		<w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+		<a:Action mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal</a:Action>
+		<w:SelectorSet>
+			<w:Selector Name="ShellId">11111111-1111-1111-1111-111111111113</w:Selector>
+		</w:SelectorSet>
+	</env:Header>
+	<env:Body>
+		<rsp:Signal CommandId="11111111-1111-1111-1111-111111111117">
+			<rsp:Code>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/signal/terminate</rsp:Code>
+		</rsp:Signal>
+	</env:Body>
+</env:Envelope>
+""";
+
+		public const string CLOSE_COMMAND_FAULT_RESPONSE =
+$$"""
+<s:Envelope xml:lang="en-US"
+	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer"
+	xmlns:e="http://schemas.xmlsoap.org/ws/2004/08/eventing"
+	xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration"
+	xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
+	xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+	<s:Header>
+		<a:Action>http://schemas.dmtf.org/wbem/wsman/1/wsman/fault</a:Action>
+		<a:MessageID>uuid:BDE06D49-FC33-4410-AE1D-E09641B6A333</a:MessageID>
+		<a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+		<a:RelatesTo>uuid:11111111-1111-1111-1111-111111111111</a:RelatesTo>
+	</s:Header>
+	<s:Body>
+		<s:Fault>
+			<s:Code>
+				<s:Value>s:Sender</s:Value>
+				<s:Subcode>
+					<s:Value>w:InvalidSelectors</s:Value>
+				</s:Subcode>
+			</s:Code>
+			<s:Reason>
+				<s:Text xml:lang="en-US">The WS-Management service cannot process the request because the request contained invalid selectors for the resource. </s:Text>
+			</s:Reason>
+			<s:Detail>
+				<w:FaultDetail>http://schemas.dmtf.org/wbem/wsman/1/wsman/faultDetail/UnexpectedSelectors</w:FaultDetail>
+				<f:WSManFault
+					xmlns:f="http://schemas.microsoft.com/wbem/wsman/1/wsmanfault" Code="2150858843" Machine="windows-host">
+					<f:Message>The request for the Windows Remote Shell with ShellId 11111111-1111-1111-1111-111111111111 failed because the shell was not found on the server. Possible causes are: the specified ShellId is incorrect or the shell no longer exists on the server. Provide the correct ShellId or create a new shell and retry the operation. </f:Message>
+				</f:WSManFault>
+			</s:Detail>
+		</s:Fault>
+	</s:Body>
+</s:Envelope>
+""";
     }
 }

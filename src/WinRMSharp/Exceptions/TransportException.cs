@@ -5,20 +5,6 @@
         public int Code { get; set; } = 500;
         public string? Content { get; set; }
 
-        public TransportException()
-        {
-        }
-
-        public TransportException(string message)
-            : base(message)
-        {
-        }
-
-        public TransportException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
-
         public TransportException(int code, string content)
             : base($"Bad HTTP response returend from server. Code: {code} Content: {content}")
         {

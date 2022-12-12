@@ -9,20 +9,20 @@ namespace WinRMSharp
         public string? Locale { get; set; }
 
         public TimeSpan? ReadTimeout { get; set; }
-        public DelegatingHandler[]? Handlers { get; set; }
     }
 
     public class WinRMClient
     {
-        private Transport _transport;
-        private Protocol _protocol;
+        private IProtocol _protocol;
+
+        public ITransport Transport => _protocol.Transport;
+        public IProtocol Protocol => _protocol;
 
         public WinRMClient(string baseUrl, ICredentials credentials, WinRMClientOptions? options = null)
         {
             TransportOptions transportOptions = new TransportOptions()
             {
-                ReadTimeout = options?.OperationTimeout,
-                Handlers = options?.Handlers
+                ReadTimeout = options?.OperationTimeout
             };
 
             ProtocolOptions protocolOptions = new ProtocolOptions
@@ -32,8 +32,13 @@ namespace WinRMSharp
                 Locale = options?.Locale
             };
 
-            _transport = new Transport(baseUrl, credentials, transportOptions);
-            _protocol = new Protocol(_transport, protocolOptions);
+            Transport transport = new Transport(baseUrl, credentials, transportOptions);
+            _protocol = new Protocol(transport, protocolOptions);
+        }
+
+        public WinRMClient(IProtocol protocol)
+        {
+            _protocol = protocol;
         }
 
         public async Task<CommandState> RunCommand(string command, string[]? args = null)

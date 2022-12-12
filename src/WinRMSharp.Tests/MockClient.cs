@@ -1,6 +1,7 @@
 ﻿using Moq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using WinRMSharp.Exceptions;
 using WinRMSharp.Utils;
 
 namespace WinRMSharp.Test
@@ -24,7 +25,7 @@ namespace WinRMSharp.Test
 
         private string ResolveResponse(string message)
         {
-            message = Patch(message);
+            //message = Patch(message);
 
             XDocument env = Xml.Parse(message);
 
@@ -43,7 +44,9 @@ namespace WinRMSharp.Test
             {
                 return string.Format(Config.RUN_CMD_PS_RESPONSE, "1");
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "1"))) || XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "2"))))
+            else if (XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "1"))) || 
+                XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "2"))) ||
+                XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "3"))))
             {
                 return Config.CLEANUP_CMD_RESPONSE;
             }
@@ -71,14 +74,31 @@ namespace WinRMSharp.Test
             {
                 return Config.STDIN_CMD_CLEANUP_RESPONSE;
             }
+            else if (XNode.DeepEquals(env, Xml.Parse(Config.OPERATION_TIMEOUT_REQUEST)))
+            {
+                return Config.OPERATION_TIMEOUT_RESPONSE;
+            }
+            else if (XNode.DeepEquals(env, Xml.Parse(Config.OPERATION_TIMEOUT_GET_0_REQUEST)))
+            {
+                throw new TransportException(500, Config.OPERATION_TIMEOUT_GET_0_RESPONSE);
+            }
+            else if (XNode.DeepEquals(env, Xml.Parse(Config.OPERATION_TIMEOUT_GET_1_REQUEST)))
+            {
+                return Config.OPERATION_TIMEOUT_GET_1_RESPONSE;
+            }
+            else if (XNode.DeepEquals(env, Xml.Parse(Config.CLOSE_COMMAND_FAULT_REQUEST)))
+            {
+                throw new TransportException(500, Config.CLOSE_COMMAND_FAULT_RESPONSE);
+            }
+
 
             throw new Exception($"Unexpected request message: '{message}'");
         }
 
-        private static string Patch(string message)
-        {
-            // Hardcode the guids to be consistent across all messages to simplify equality.
-            return Regex.Replace(message, @"uuid:[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}", "uuid:11111111-1111-1111-1111-111111111111");
-        }
+        //private static string Patch(string message)
+        //{
+        //    // Hardcode the guids to be consistent across all messages to simplify equality.
+        //    return Regex.Replace(message, @"uuid:[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}", "uuid:11111111-1111-1111-1111-111111111111");
+        //}
     }
 }

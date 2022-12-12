@@ -50,10 +50,6 @@ namespace WinRMSharp.Contracts
         public string? IdleTimeOutString
         {
             get => (IdleTimeout != null) ? XmlConvert.ToString(IdleTimeout.Value) : null;
-            set
-            {
-                IdleTimeout = (string.IsNullOrEmpty(value)) ? TimeSpan.Zero : XmlConvert.ToTimeSpan(value);
-            }
         }
 
         [XmlElement(Namespace = Namespace.WSMAN_SHELL)]
@@ -61,34 +57,6 @@ namespace WinRMSharp.Contracts
 
         [XmlElement(Namespace = Namespace.WSMAN_SHELL)]
         public string OutputStreams { get; set; } = "stdout stderr";
-
-        [XmlIgnore]
-        public TimeSpan? ShellRunTime { get; set; }
-
-        [Browsable(false)]
-        [XmlElement(ElementName = nameof(ShellRunTime), Namespace = Namespace.WSMAN_SHELL)]
-        public string? ShellRunTimeString
-        {
-            get => (ShellRunTime != null) ? XmlConvert.ToString(ShellRunTime.Value) : null;
-            set
-            {
-                ShellRunTime = (string.IsNullOrEmpty(value)) ? TimeSpan.Zero : XmlConvert.ToTimeSpan(value);
-            }
-        }
-
-        [XmlIgnore]
-        public TimeSpan? ShellInactivity { get; set; }
-
-        [Browsable(false)]
-        [XmlElement(ElementName = nameof(ShellInactivity), Namespace = Namespace.WSMAN_SHELL)]
-        public string? ShellInactivityString
-        {
-            get => (ShellInactivity != null) ? XmlConvert.ToString(ShellInactivity.Value) : null;
-            set
-            {
-                ShellInactivity = (string.IsNullOrEmpty(value)) ? null : XmlConvert.ToTimeSpan(value);
-            }
-        }
 
         [XmlElement(Namespace = Namespace.WSMAN_SHELL)]
         public string? WorkingDirectory { get; set; }

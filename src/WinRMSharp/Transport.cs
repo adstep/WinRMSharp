@@ -8,51 +8,22 @@ namespace WinRMSharp
     public class TransportOptions
     {
         public TimeSpan? ReadTimeout { get; set; }
-        public DelegatingHandler[]? Handlers { get; set; }
     }
 
     public class Transport : ITransport
     {
         private static TimeSpan DefaultReadTimeout = TimeSpan.FromSeconds(30);
 
-        private List<HttpMessageHandler> _handlers;
         private HttpClient _httpClient;
 
         public Transport(string baseUrl, ICredentials credentials, TransportOptions? options = null)
+            : this(baseUrl, GenerateSecureHandler(credentials), options)
         {
-            HttpClientHandler httpClientHandler = new HttpClientHandler()
-            {
-                Credentials = credentials,
-                ClientCertificateOptions = ClientCertificateOption.Manual,
-                ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true,
-            };
+        }
 
-            _handlers = new List<HttpMessageHandler>();
-
-            for (int i = 0; i < options?.Handlers?.Length; i++)
-            {
-                _handlers.Add(options!.Handlers[i]);
-            }
-
-            _handlers.Add(httpClientHandler);
-
-
-            for (int i = 1; i < _handlers.Count; i++)
-            {
-                DelegatingHandler? prevHandler = _handlers[i - 1] as DelegatingHandler;
-                HttpMessageHandler currHandler = _handlers[i];
-
-                if (prevHandler == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                prevHandler.InnerHandler = currHandler;
-            }
-
-            HttpMessageHandler rootHandler = _handlers[0];
-            
-            _httpClient = new HttpClient(rootHandler)
+        internal Transport(string baseUrl, HttpMessageHandler messageHandler, TransportOptions? options = null)
+        {
+            _httpClient = new HttpClient(messageHandler)
             {
                 BaseAddress = new Uri(baseUrl),
                 Timeout = options?.ReadTimeout ?? DefaultReadTimeout
@@ -77,14 +48,27 @@ namespace WinRMSharp
             }
             catch (HttpRequestException ex)
             {
+                string content = string.Empty;
+                int statusCode = 500;
+
                 if (response != null)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    throw new TransportException((int)response.StatusCode, content);
+                    content = await response.Content.ReadAsStringAsync();
+                    statusCode = (int)response.StatusCode;
                 }
 
-                throw new TransportException(500, string.Empty, ex);
+                throw new TransportException(500, content, ex);
             }
+        }
+
+        private static HttpClientHandler GenerateSecureHandler(ICredentials credentials)
+        {
+            return new HttpClientHandler()
+            {
+                Credentials = credentials,
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true,
+            };
         }
     }
 }

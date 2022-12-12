@@ -16,7 +16,7 @@ namespace WinRMSharp
         public string? Locale { get; set; }
     }
 
-    public class Protocol
+    public class Protocol : IProtocol
     {
         private static readonly TimeSpan DefaultOperationTimeout = TimeSpan.FromSeconds(20);
         private static readonly int DefaultMaxEnvelopeSize = 153600;
@@ -24,6 +24,7 @@ namespace WinRMSharp
 
         private readonly ITransport _transport;
         private readonly IGuidProvider _guidProvider;
+        public ITransport Transport => _transport;
 
         public TimeSpan OperationTimeout { get; }
         public int MaxEnvelopeSize { get; }
@@ -278,8 +279,6 @@ namespace WinRMSharp
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
             const string action = "http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete";
 
-            string messageId = _guidProvider.NewGuid().ToString();
-
             Envelope envelope = new Envelope()
             {
                 Header = GetHeader(resourceUri, action, shellId),
@@ -358,23 +357,23 @@ namespace WinRMSharp
         {
             try
             {
-                //Console.WriteLine("REQUEST: ");
-                //Console.WriteLine(XDocument.Parse(Xml.Serialize(envelope)).ToString());
-
                 var response = await _transport.Send(Xml.Serialize(envelope));
-
-                //Console.WriteLine("RESPONSE: ");
-                //Console.WriteLine(XDocument.Parse(response).ToString());
 
                 return Xml.Parse(response);
             }
             catch (TransportException ex)
             {
+                if (string.IsNullOrEmpty(ex.Content))
+                {
+                    // Assume some other transport error and raise the original exception
+                    throw ex;
+                }
+
                 XDocument root;
 
                 try
                 {
-                    root = Xml.Parse(ex?.Content);
+                    root = Xml.Parse(ex.Content);
                 }
                 catch (Exception)
                 {
@@ -397,7 +396,6 @@ namespace WinRMSharp
 
                     if (wsmanFaultCode == WsmanFault.OperationTimeout)
                         throw new OperationTimeoutException();
-
 
                     string? faultCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Value", nsmgr)?.Value;
                     string? faultSubCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Subcode/soapenv:Value", nsmgr)?.Value;

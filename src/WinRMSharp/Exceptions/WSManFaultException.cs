@@ -6,23 +6,8 @@
         public string? FaultSubCode { get; set; }
         public string? FaultDescription { get; set; }
 
-        public WSManFaultException(string? faultCode, string? faultSubCode, string? faultDescription)
-        {
-            FaultCode = faultCode;
-            FaultSubCode = faultSubCode;
-            FaultDescription = faultDescription;
-        }
-
         public WSManFaultException(string? faultCode, string? faultSubCode, string? faultDescription, string message)
             : base(message)
-        {
-            FaultCode = faultCode;
-            FaultSubCode = faultSubCode;
-            FaultDescription = faultDescription;
-        }
-
-        public WSManFaultException(string? faultCode, string? faultSubCode, string? faultDescription, string message, Exception ex)
-            : base(message, ex)
         {
             FaultCode = faultCode;
             FaultSubCode = faultSubCode;
