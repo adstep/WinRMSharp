@@ -9,12 +9,9 @@
     <Authors>Adam Stephenson</Authors>
     <AssemblyName>WinRMSharp</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <Version>$(WinRMVersion)</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/adstep/WinRMSharp</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>$(WinRMVersion)</AssemblyVersion>
-    <FileVersion>$(WinRMVersion)</FileVersion>
 		<PackageTags>WinRM</PackageTags>
     <LangVersion>11.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -38,6 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="..\..\LICENSE" Pack="true" PackagePath="" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
