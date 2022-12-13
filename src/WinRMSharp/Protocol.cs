@@ -34,7 +34,6 @@ namespace WinRMSharp
         {
             _guidProvider = guidProvider;
             _transport = transport;
-
             OperationTimeout = options?.OperationTimeout ?? DefaultOperationTimeout;
             MaxEnvelopeSize = options?.MaxEnvelopeSize ?? DefaultMaxEnvelopeSize;
             Locale = options?.Locale ?? DefaultLocale;
