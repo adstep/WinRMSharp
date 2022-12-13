@@ -34,6 +34,15 @@ jobs:
         inputs:
           version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
 
+  - task: 'PowerShell@2'
+    displayName: 'Set Semantic Version'
+    inputs:
+      targetType: 'inline'
+      script: '& ($(Build.SourcesDirectory)/.build/Get-nbgv.ps1) cloud -c'
+      enabled: false
+      workingDirectory: '$(Build.SourcesDirectory)'
+      failOnStderr: true
+
   - task: DotNetCoreCLI@2
     displayName: 'dotnet build'
     inputs:
