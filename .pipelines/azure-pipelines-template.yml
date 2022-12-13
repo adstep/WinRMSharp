@@ -35,12 +35,10 @@ jobs:
     inputs:
       targetType: 'inline'
       script: '& (.build/Get-nbgv.ps1) cloud -c'
+      enabled: false
       workingDirectory: '$(Build.SourcesDirectory)'
       failOnStderr: true
-
-  - powershell: '& (./build/Get-nbgv.ps1) cloud -c'
-    displayName: ⚙ Set build number
-
+      
   - task: DotNetCoreCLI@2
     displayName: 'dotnet build'
     inputs:
