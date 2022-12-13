@@ -50,7 +50,6 @@ jobs:
           command: test
           projects:  'src/WinRMSharp.Tests'
           arguments: '--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
-          publishTestResults: true
           testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
 
   - task: ArchiveFiles@2
