@@ -2,8 +2,12 @@ name:
   WinRMSharp CI
 
 trigger:
-- main
-
+  branches:
+    include:
+      - main
+  stages:
+    - v*
+        
 jobs:
 - template: azure-pipelines-template.yml
   parameters:

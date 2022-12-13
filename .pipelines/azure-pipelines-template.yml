@@ -56,8 +56,8 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'dotnet pack'
     inputs:
-      command: 'pack' # `dotnet build` implicitly runs `dotnet restore` as well
-      projects: 'src/WinRMSharp.sln'
+      command: 'pack'
+      projects: 'src\WinRMSharp\WinRMSharp.csproj'
       arguments: "--configuration ${{parameters.buildConfiguration}}"
 
   - task: PublishCodeCoverageResults@1
