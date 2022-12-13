@@ -81,11 +81,11 @@ jobs:
       TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
       OverWrite: true
 
-  # - task: PublishCodeCoverageResults@1
-  #   displayName: 'Publish code coverage report'
-  #   inputs:
-  #     codeCoverageTool: 'Cobertura'
-  #     summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage report'
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
   - ${{ if parameters.publishBuild }}:
     - task: PublishBuildArtifacts@1
