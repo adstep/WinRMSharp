@@ -53,9 +53,13 @@ jobs:
           publishTestResults: true
           testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
 
-  - task: DotNetCoreCLI@2
+  - task: 'CmdLine@2'
     displayName: 'dotnet pack'
     inputs:
+      script: 'dotnet pack --configuration ${{parameters.buildConfiguration}} src\WinRMSharp.sln'
+      workingDirectory: '$(Build.SourcesDirectory)'
+      failOnStderr: true
+      
       command: 'pack'
       projects: 'src\WinRMSharp\WinRMSharp.csproj'
       arguments: "--configuration ${{parameters.buildConfiguration}}"
