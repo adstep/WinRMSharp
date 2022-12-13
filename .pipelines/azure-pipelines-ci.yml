@@ -5,7 +5,7 @@ trigger:
 - main
 
 jobs:
-- template: .pipelines/azure-pipelines-template.yml
+- template: azure-pipelines-template.yml
   parameters:
     os: windows
     architecture: x64
