@@ -50,7 +50,7 @@ jobs:
           command: test
           publishTestResults: false
           projects:  'src/WinRMSharp.Tests'
-          arguments: '--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+          arguments: '--logger trx  --no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
           testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
 
   - task: ArchiveFiles@2
@@ -74,10 +74,16 @@ jobs:
       arguments: "--configuration ${{parameters.buildConfiguration}}"
 
   - task: CopyFiles@2
+    displayName: 'Copy coverage report'
     inputs:
       Contents: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
       TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
       OverWrite: true
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'XUnit'
+      testResultsFiles: '**/*.trx'
 
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish code coverage report'
@@ -85,10 +91,10 @@ jobs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
-  - ${{ if parameters.publishBuild }}:
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish deployables'
-      inputs:
-        PublishBuildArtifacts: '$(Build.ArtifactStagingDirectory)/pkg/**'
-        ArtifactName: 'deployables-${{parameters.os}}-${{parameters.architecture}}'
+  # - ${{ if parameters.publishBuild }}:
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish deployables'
+    inputs:
+      PublishBuildArtifacts: '$(Build.ArtifactStagingDirectory)/pkg/**'
+      ArtifactName: 'deployables-${{parameters.os}}-${{parameters.architecture}}'
   
