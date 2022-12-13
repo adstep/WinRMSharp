@@ -77,8 +77,8 @@ jobs:
   # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths).
   - task: CopyFiles@2
     inputs:
-      Contents: '$(Agent.TempDirectory)/**/coverage.cobertura.xml' # string. Required. Contents. Default: **.
-      TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/ # string. Required. Target Folder. 
+      Contents: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+      TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
       OverWrite: true
 
   # - task: PublishCodeCoverageResults@1
