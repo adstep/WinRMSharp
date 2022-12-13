@@ -48,9 +48,9 @@ jobs:
         condition: succeededOrFailed()
         inputs:
           command: test
-          publishTestResults: false
+          publishTestResults: true
           projects:  'src/WinRMSharp.Tests'
-          arguments: '--logger trx  --no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+          arguments: '--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
           testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
 
   - task: ArchiveFiles@2
@@ -68,22 +68,21 @@ jobs:
       script: 'dotnet pack --configuration ${{parameters.buildConfiguration}} --output $(Build.ArtifactStagingDirectory)/pkg src/WinRMSharp/WinRMSharp.csproj'
       workingDirectory: '$(Build.SourcesDirectory)'
       failOnStderr: true
-      
-      command: 'pack'
-      projects: 'src\WinRMSharp\WinRMSharp.csproj'
-      arguments: "--configuration ${{parameters.buildConfiguration}}"
 
-  - task: CopyFiles@2
-    displayName: 'Copy coverage report'
-    inputs:
-      Contents: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-      TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
-      OverWrite: true
+  - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.ArtifactStagingDirectory)/pkg/coverage-report -reporttypes:"Cobertura"'  
+    displayName: 'Create reports'  
 
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: 'XUnit'
-      testResultsFiles: '**/*.trx'
+  # - task: CopyFiles@2
+  #   displayName: 'Copy coverage report'
+  #   inputs:
+  #     Contents: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+  #     TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
+  #     OverWrite: true
+
+  # - task: PublishTestResults@2
+  #   inputs:
+  #     testResultsFormat: 'XUnit'
+  #     testResultsFiles: '**/*.trx'
 
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish code coverage report'
