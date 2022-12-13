@@ -34,15 +34,6 @@ jobs:
         inputs:
           version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
 
-  - task: 'PowerShell@2'
-    displayName: 'Set Semantic Version'
-    inputs:
-      targetType: 'inline'
-      script: '& ($(Build.SourcesDirectory)/.build/Get-nbgv.ps1) cloud -c'
-      enabled: false
-      workingDirectory: '$(Build.SourcesDirectory)'
-      failOnStderr: true
-
   - task: DotNetCoreCLI@2
     displayName: 'dotnet build'
     inputs:
@@ -82,11 +73,19 @@ jobs:
       projects: 'src\WinRMSharp\WinRMSharp.csproj'
       arguments: "--configuration ${{parameters.buildConfiguration}}"
 
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage report'
+  # Copy files v2
+  # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths).
+  - task: CopyFiles@2
     inputs:
-      codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+      Contents: '$(Agent.TempDirectory)/**/coverage.cobertura.xml' # string. Required. Contents. Default: **.
+      TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/ # string. Required. Target Folder. 
+      OverWrite: true
+
+  # - task: PublishCodeCoverageResults@1
+  #   displayName: 'Publish code coverage report'
+  #   inputs:
+  #     codeCoverageTool: 'Cobertura'
+  #     summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
   - ${{ if parameters.publishBuild }}:
     - task: PublishBuildArtifacts@1
