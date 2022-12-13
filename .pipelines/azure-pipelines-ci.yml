@@ -5,9 +5,6 @@ trigger:
   tags:
     include:
     - v*
-  branches:
-    include:
-      - main
         
 jobs:
 - template: azure-pipelines-template.yml
