@@ -48,9 +48,9 @@ jobs:
         condition: succeededOrFailed()
         inputs:
           command: test
+          publishTestResults: true
           projects:  'src/WinRMSharp.Tests'
           arguments: '--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
-          publishTestResults: true
           testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
 
   - task: ArchiveFiles@2
@@ -77,7 +77,7 @@ jobs:
   # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths).
   - task: CopyFiles@2
     inputs:
-      Contents: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+      Contents: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
       TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
       OverWrite: true
 
