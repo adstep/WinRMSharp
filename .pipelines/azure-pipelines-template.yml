@@ -62,6 +62,6 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Build.SourcesDirectory)\src\WinRMSharp\bin\${{parameters.buildConfiguration}}' # string. Alias: path. Required. File or directory path. Default: $(Pipeline.Workspace).
-      #artifact: # string. Alias: artifactName. Artifact name. 
+      artifact: 'deployables-${{parameters.os}}-${{parameters.architecture}}'
       publishLocation: 'pipeline'
   
