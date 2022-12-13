@@ -75,23 +75,18 @@ jobs:
   # - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.ArtifactStagingDirectory)/pkg/coverage-report -reporttypes:"Cobertura"'  
   #   displayName: 'Create reports'  
 
-  - task: CopyFiles@2
-    displayName: 'Copy coverage report'
-    inputs:
-      sourceFolder: $(Agent.TempDirectory)
-      Contents: '**\coverage.cobertura.xml'
-      TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
-
-  # - task: PublishTestResults@2
-  #   inputs:
-  #     testResultsFormat: 'XUnit'
-  #     testResultsFiles: '**/*.trx'
-
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish code coverage report'
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+
+  - task: CopyFiles@2
+    displayName: 'Copy coverage report'
+    inputs:
+      sourceFolder: $(Build.ArtifactStagingDirectory)
+      Contents: '**\coverage.cobertura.xml'
+      TargetFolder: $(Build.ArtifactStagingDirectory)/pkg/
 
   # - ${{ if parameters.publishBuild }}:
   - task: PublishBuildArtifacts@1
