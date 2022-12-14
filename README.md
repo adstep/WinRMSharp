@@ -1,5 +1,12 @@
 # WinRMSharp
 
+[![Github Release](https://img.shields.io/github/release/adstep/WinRMSharp.svg?style=flat)](https://github.com/adstep/WinRMSharp/releases/latest)
+[![NuGet](https://img.shields.io/nuget/vpre/WinRMSharp)](https://www.nuget.org/packages/WinRMSharp)
+[![License](https://img.shields.io/github/license/adstep/WinRMSharp.svg?style=flat)](https://github.com/adstep/WinRMSharp/blob/main/LICENSE)
+
+[![Build Status](https://dev.azure.com/adstep/WinRMSharp/_apis/build/status/WinRMSharp%20CI)](https://dev.azure.com/adstep/WinRMSharp/_build/latest?definitionId=4)
+[![Coverage](https://img.shields.io/azure-devops/coverage/adstep/WinRMSharp/4)](https://dev.azure.com/adstep/WinRMSharp/_build/latest?definitionId=4)
+
 WinRMSharp is a .NET Client for Windows Remote Management (WinRM) service. It allows you to invoke commands on target Windows machines from any machine that can run .NET.
 
 WinRM allows you to perform various management tasks remotely. These include, but are not limited to: running batch scripts, powershell scripts and fetching WMI variables.
