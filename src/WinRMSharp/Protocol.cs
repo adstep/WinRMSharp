@@ -22,9 +22,8 @@ namespace WinRMSharp
         private static readonly int DefaultMaxEnvelopeSize = 153600;
         private static readonly string DefaultLocale = "en-US";
 
-        private readonly ITransport _transport;
-        private readonly IGuidProvider _guidProvider;
-        public ITransport Transport => _transport;
+        public IGuidProvider GuidProvider { get; private set; }
+        public ITransport Transport { get; private set; }
 
         public TimeSpan OperationTimeout { get; }
         public int MaxEnvelopeSize { get; }
@@ -32,8 +31,9 @@ namespace WinRMSharp
 
         internal Protocol(ITransport transport, IGuidProvider guidProvider, ProtocolOptions? options = null)
         {
-            _guidProvider = guidProvider;
-            _transport = transport;
+            GuidProvider = guidProvider;
+            Transport = transport;
+
             OperationTimeout = options?.OperationTimeout ?? DefaultOperationTimeout;
             MaxEnvelopeSize = options?.MaxEnvelopeSize ?? DefaultMaxEnvelopeSize;
             Locale = options?.Locale ?? DefaultLocale;
@@ -91,7 +91,7 @@ namespace WinRMSharp
                 throw new WinRMException("Failed to extract shellId");
             }
 
-            return shellId;
+            return shellId!;
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace WinRMSharp
                 }
             };
 
-            XDocument root = await Send(envelope);
+            await Send(envelope);
         }
 
         public async Task<CommandState> PollCommandState(string shellId, string commandId)
@@ -256,7 +256,7 @@ namespace WinRMSharp
 
             if (done)
             {
-                int.TryParse(root.Descendants().FirstOrDefault(e => e.Name.ToString().EndsWith("ExitCode"))?.Value, out statusCode);
+                _ = int.TryParse(root.Descendants().FirstOrDefault(e => e.Name.ToString().EndsWith("ExitCode"))?.Value, out statusCode);
             }
 
             return new CommandState()
@@ -356,7 +356,7 @@ namespace WinRMSharp
         {
             try
             {
-                var response = await _transport.Send(Xml.Serialize(envelope));
+                var response = await Transport.Send(Xml.Serialize(envelope));
 
                 return Xml.Parse(response);
             }
@@ -372,7 +372,7 @@ namespace WinRMSharp
 
                 try
                 {
-                    root = Xml.Parse(ex.Content);
+                    root = Xml.Parse(ex.Content!);
                 }
                 catch (Exception)
                 {
@@ -401,8 +401,7 @@ namespace WinRMSharp
 
                     string? errorMessage = fault.XPathSelectElement("//soapenv:Reason/soapenv:Text", nsmgr)?.Value;
 
-                    if (errorMessage == null)
-                        errorMessage = "(no error message in fault)";
+                    errorMessage ??= "(no error message in fault)";
 
                     var faultData = new
                     {
@@ -420,7 +419,7 @@ namespace WinRMSharp
 
         private Header GetHeader(string resourceUri, string action, string? shellId = null)
         {
-            string messageId = _guidProvider.NewGuid().ToString();
+            string messageId = GuidProvider.NewGuid().ToString();
 
             var header = new Header()
             {
@@ -469,7 +468,7 @@ namespace WinRMSharp
                     Selector = new Selector()
                     {
                         Name = "ShellId",
-                        Value = shellId
+                        Value = shellId!
                     }
                 };
             }

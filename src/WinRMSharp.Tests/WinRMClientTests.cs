@@ -7,7 +7,7 @@ namespace WinRMSharp.Tests
     public class WinRMClientTests
     {
         [Fact]
-        public async Task VerifyConstruciton()
+        public void VerifyConstruciton()
         {
             string baseUrl = "https://localhost:5986";
             ICredentials credentials = new NetworkCredential()
