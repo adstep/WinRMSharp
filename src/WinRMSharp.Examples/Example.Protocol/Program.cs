@@ -1,10 +1,9 @@
 ﻿using System.Net;
-using System.Xml.Linq;
 using WinRMSharp;
 
 internal class Program
 {
-    static async Task Main(string[] args)
+    public static async Task Main()
     {
         string baseUrl = "";
         string userName = "";
@@ -22,7 +21,7 @@ internal class Program
         string shellId = await protocol.OpenShell();
         Console.WriteLine($"Opened shell '{shellId}'");
 
-        string commandId = await protocol.RunCommand(shellId, $"ipconfig", new string[] {"/all"});
+        string commandId = await protocol.RunCommand(shellId, $"ipconfig", new string[] { "/all" });
         Console.WriteLine($"Started command '{commandId}'");
 
         CommandState commandState = await protocol.PollCommandState(shellId, commandId);

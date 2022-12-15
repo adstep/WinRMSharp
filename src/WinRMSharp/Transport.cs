@@ -12,9 +12,9 @@ namespace WinRMSharp
 
     public class Transport : ITransport
     {
-        private static TimeSpan DefaultReadTimeout = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan DefaultReadTimeout = TimeSpan.FromSeconds(30);
 
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         public Transport(string baseUrl, ICredentials credentials, TransportOptions? options = null)
             : this(baseUrl, GenerateSecureHandler(credentials), options)

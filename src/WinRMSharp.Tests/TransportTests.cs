@@ -36,7 +36,7 @@ namespace WinRMSharp.Tests
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage(statusCode) { Content = new StringContent(errorContent)});
+            .ReturnsAsync(new HttpResponseMessage(statusCode) { Content = new StringContent(errorContent) });
             HttpMessageHandler httpMessageHandler = mockHttpMessageHandler.Object;
 
             Transport transport = new Transport("https://localhost:5986", httpMessageHandler);

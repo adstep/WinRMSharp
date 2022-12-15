@@ -44,7 +44,7 @@ namespace WinRMSharp
         {
         }
 
-        public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null,  Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null)
+        public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null, Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
             const string action = "http://schemas.xmlsoap.org/ws/2004/09/transfer/Create";
@@ -192,8 +192,10 @@ namespace WinRMSharp
                     stderrBuilder.Append(state.Stderr);
 
                     if (!done)
+                    {
                         await Task.Delay(TimeSpan.FromMilliseconds(500));
-                } 
+                    }
+                }
                 catch (OperationTimeoutException)
                 {
                     // Expected exception when waiting for a long-running process with no output
@@ -313,7 +315,7 @@ namespace WinRMSharp
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
             const string action = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal";
 
-            var envelope = new Envelope()
+            Envelope envelope = new Envelope()
             {
                 Header = GetHeader(resourceUri, action, shellId),
                 Body = new Body()
@@ -331,9 +333,9 @@ namespace WinRMSharp
 
             try
             {
-                var root = await Send(envelope);
+                XDocument root = await Send(envelope);
 
-                var relatesTo = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("RelatesTo") ?? false)?.Value;
+                string? relatesTo = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("RelatesTo") ?? false)?.Value;
 
                 if (relatesTo != envelope.Header.MessageID)
                 {
@@ -356,7 +358,7 @@ namespace WinRMSharp
         {
             try
             {
-                var response = await Transport.Send(Xml.Serialize(envelope));
+                string response = await Transport.Send(Xml.Serialize(envelope));
 
                 return Xml.Parse(response);
             }
@@ -380,7 +382,7 @@ namespace WinRMSharp
                     throw ex;
                 }
 
-                var nsmgr = new XmlNamespaceManager(new NameTable());
+                XmlNamespaceManager nsmgr = new XmlNamespaceManager(new NameTable());
 
                 nsmgr.AddNamespace("soapenv", Namespace.SOAP_ENVELOPE);
                 nsmgr.AddNamespace("soapaddr", Namespace.ADDRESSING);
@@ -421,7 +423,7 @@ namespace WinRMSharp
         {
             string messageId = GuidProvider.NewGuid().ToString();
 
-            var header = new Header()
+            Header header = new Header()
             {
                 To = "http://windows-host:5985/wsman",
                 ReplyTo = new ReplyTo()

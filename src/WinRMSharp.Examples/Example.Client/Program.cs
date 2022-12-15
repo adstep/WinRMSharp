@@ -3,7 +3,7 @@ using WinRMSharp;
 
 internal class Program
 {
-    static async Task Main(string[] args)
+    public static async Task Main()
     {
         string baseUrl = "";
         string userName = "";

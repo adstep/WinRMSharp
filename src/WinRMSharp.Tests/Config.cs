@@ -1,6 +1,6 @@
-﻿namespace WinRMSharp.Test
+﻿namespace WinRMSharp.Tests
 {
-	public class Config
+    public class Config
     {
         public const string OPEN_SHELL_REQUEST =
 $"""
@@ -505,7 +505,7 @@ $$"""
 </s:Envelope>
 """;
 
-		public const string RUN_CMD_SEND_INPUT =
+        public const string RUN_CMD_SEND_INPUT =
 $$"""
 <?xml version="1.0" encoding="utf-16"?>
 <env:Envelope 
@@ -544,7 +544,7 @@ $$"""
 </env:Envelope>
 """;
 
-		public const string RUN_CMD_SEND_INPUT_RESPONSE =
+        public const string RUN_CMD_SEND_INPUT_RESPONSE =
 $$"""
 <?xml version="1.0" encoding="UTF-8"?>
 <s:Envelope 
@@ -567,7 +567,7 @@ $$"""
 </s:Envelope>
 """;
 
-		public const string RUN_CMD_SEND_INPUT_GET_OUTPUT =
+        public const string RUN_CMD_SEND_INPUT_GET_OUTPUT =
 $$"""
 <?xml version="1.0" encoding="utf-16"?>
 <env:Envelope 
@@ -606,7 +606,7 @@ $$"""
 </env:Envelope>
 """;
 
-		public const string RUN_CMD_SEND_INPUT_GET_OUTPUT_RESPONSE =
+        public const string RUN_CMD_SEND_INPUT_GET_OUTPUT_RESPONSE =
 $$"""
 <?xml version="1.0" encoding="UTF-8"?>
 <s:Envelope 
@@ -693,7 +693,7 @@ $$"""
 	</s:Body>
 </s:Envelope>";
 
-		public const string OPERATION_TIMEOUT_REQUEST =
+        public const string OPERATION_TIMEOUT_REQUEST =
 $$"""
 <env:Envelope
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -735,7 +735,7 @@ $$"""
 </env:Envelope>
 """;
 
-		public const string OPERATION_TIMEOUT_RESPONSE =
+        public const string OPERATION_TIMEOUT_RESPONSE =
 $$"""
 <s:Envelope xml:lang="en-US"
 	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
@@ -758,7 +758,7 @@ $$"""
 </s:Envelope>
 """;
 
-		public const string OPERATION_TIMEOUT_GET_0_REQUEST =
+        public const string OPERATION_TIMEOUT_GET_0_REQUEST =
 $$"""
 <env:Envelope
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -937,7 +937,7 @@ $$"""
 </s:Envelope>
 """;
 
-		public const string CLOSE_COMMAND_FAULT_REQUEST =
+        public const string CLOSE_COMMAND_FAULT_REQUEST =
 $$"""
 <env:Envelope
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -975,7 +975,7 @@ $$"""
 </env:Envelope>
 """;
 
-		public const string CLOSE_COMMAND_FAULT_RESPONSE =
+        public const string CLOSE_COMMAND_FAULT_RESPONSE =
 $$"""
 <s:Envelope xml:lang="en-US"
 	xmlns:s="http://www.w3.org/2003/05/soap-envelope"

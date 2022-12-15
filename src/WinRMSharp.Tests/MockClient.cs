@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using WinRMSharp.Exceptions;
+using WinRMSharp.Tests;
 using WinRMSharp.Utils;
 
 namespace WinRMSharp.Test

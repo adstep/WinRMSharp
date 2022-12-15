@@ -47,7 +47,7 @@ csharp_preferred_modifier_order = public,private,protected,internal,static,exter
 dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_property = false:warning
 dotnet_style_qualification_for_method = false:warning
-dotnet_style_qualification_for_event = false:warning
+dotnet_style_qualification_for_event = false:warningfil
 
 # only use var when it's obvious what the variable type is
 csharp_style_var_for_built_in_types = false
@@ -214,6 +214,24 @@ csharp_space_between_square_brackets = false
 
 # License header
 # file_header_template = INSERT_FILE_HEADER
+
+# Default severity for all IDE code style rules with category 'Style'
+dotnet_analyzer_diagnostic.category-Style.severity = warning
+
+# Default severity for all IDE code quality rules with category 'CodeQuality'
+dotnet_analyzer_diagnostic.category-CodeQuality.severity = warning
+
+# IDE0011: Add braces to 'if' statement
+dotnet_diagnostic.IDE0011.severity = silent
+
+# IDE0046: 'if' statement can be simplified
+dotnet_diagnostic.IDE0046.severity = silent
+
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = silent
+
+# IDE0065: Using directives must be placed outside of a namespace declaration
+dotnet_diagnostic.IDE0065.severity = silent
 
 # C++ Files
 [*.{cpp,h,in}]

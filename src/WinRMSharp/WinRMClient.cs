@@ -13,10 +13,8 @@ namespace WinRMSharp
 
     public class WinRMClient
     {
-        private IProtocol _protocol;
-
-        public ITransport Transport => _protocol.Transport;
-        public IProtocol Protocol => _protocol;
+        public ITransport Transport => Protocol.Transport;
+        public IProtocol Protocol { get; private set; }
 
         public WinRMClient(string baseUrl, ICredentials credentials, WinRMClientOptions? options = null)
         {
@@ -33,23 +31,23 @@ namespace WinRMSharp
             };
 
             Transport transport = new Transport(baseUrl, credentials, transportOptions);
-            _protocol = new Protocol(transport, protocolOptions);
+            Protocol = new Protocol(transport, protocolOptions);
         }
 
         public WinRMClient(IProtocol protocol)
         {
-            _protocol = protocol;
+            Protocol = protocol;
         }
 
         public async Task<CommandState> RunCommand(string command, string[]? args = null)
         {
-            string shellId = await _protocol.OpenShell();
-            string commandId = await _protocol.RunCommand(shellId, command, args);
+            string shellId = await Protocol.OpenShell();
+            string commandId = await Protocol.RunCommand(shellId, command, args);
 
-            CommandState state = await _protocol.PollCommandState(shellId, commandId);
+            CommandState state = await Protocol.PollCommandState(shellId, commandId);
 
-            await _protocol.CleanupCommand(shellId, commandId);
-            await _protocol.CloseShell(shellId);
+            await Protocol.CleanupCommand(shellId, commandId);
+            await Protocol.CloseShell(shellId);
 
             return state;
         }
