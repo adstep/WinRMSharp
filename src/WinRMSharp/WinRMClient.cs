@@ -2,21 +2,31 @@
 
 namespace WinRMSharp
 {
+    /// <summary>
+    /// Options used to configure a <see cref="WinRMClient"/> instance.
+    /// </summary>
     public class WinRMClientOptions
     {
+        /// <summary>
+        /// Maximum allowed time in seconds for any single wsman HTTP operation
+        /// </summary>
         public TimeSpan? OperationTimeout { get; set; }
-        public int? MaxEnvelopeSize { get; set; }
-        public string? Locale { get; set; }
 
+        /// <summary>
+        /// Maximum response size in bytes. 
+        /// </summary>
+        public int? MaxEnvelopeSize { get; set; }
+
+        /// <summary>
+        /// Maximum timeout to wait before an HTTP connect/read times out.
+        /// </summary>
         public TimeSpan? ReadTimeout { get; set; }
     }
 
     public class WinRMClient
     {
-        private IProtocol _protocol;
-
-        public ITransport Transport => _protocol.Transport;
-        public IProtocol Protocol => _protocol;
+        public ITransport Transport => Protocol.Transport;
+        public IProtocol Protocol { get; private set; }
 
         public WinRMClient(string baseUrl, ICredentials credentials, WinRMClientOptions? options = null)
         {
@@ -28,28 +38,33 @@ namespace WinRMSharp
             ProtocolOptions protocolOptions = new ProtocolOptions
             {
                 OperationTimeout = options?.OperationTimeout,
-                MaxEnvelopeSize = options?.MaxEnvelopeSize,
-                Locale = options?.Locale
+                MaxEnvelopeSize = options?.MaxEnvelopeSize
             };
 
             Transport transport = new Transport(baseUrl, credentials, transportOptions);
-            _protocol = new Protocol(transport, protocolOptions);
+            Protocol = new Protocol(transport, protocolOptions);
         }
 
         public WinRMClient(IProtocol protocol)
         {
-            _protocol = protocol;
+            Protocol = protocol;
         }
 
+        /// <summary>
+        /// Executes a command on the destination host.
+        /// </summary>
+        /// <param name="command">Command to execute on the destination host.</param>
+        /// <param name="args">Array of arguments for the command</param>
+        /// <returns></returns>
         public async Task<CommandState> RunCommand(string command, string[]? args = null)
         {
-            string shellId = await _protocol.OpenShell();
-            string commandId = await _protocol.RunCommand(shellId, command, args);
+            string shellId = await Protocol.OpenShell();
+            string commandId = await Protocol.RunCommand(shellId, command, args);
 
-            CommandState state = await _protocol.PollCommandState(shellId, commandId);
+            CommandState state = await Protocol.PollCommandState(shellId, commandId);
 
-            await _protocol.CleanupCommand(shellId, commandId);
-            await _protocol.CloseShell(shellId);
+            await Protocol.CloseCommand(shellId, commandId);
+            await Protocol.CloseShell(shellId);
 
             return state;
         }

@@ -31,10 +31,10 @@ internal class Program
         Console.WriteLine($"Stdout: \r\n{commandState.Stdout}");
         Console.WriteLine($"Stderr: \r\n{commandState.Stderr}");
 
-        await protocol.CleanupCommand(shellId, commandId);
+        await protocol.CloseCommand(shellId, commandId);
         try
         {
-            await protocol.CleanupCommand("11111111-1111-1111-1111-111111111111", commandId);
+            await protocol.CloseCommand("11111111-1111-1111-1111-111111111111", commandId);
         }
         catch { }
         await protocol.CloseShell(shellId);

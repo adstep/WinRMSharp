@@ -9,11 +9,21 @@ using System.Text;
 
 namespace WinRMSharp
 {
+    /// <summary>
+    /// Options used to configure a <see cref="Protocol"/> instance.
+    /// </summary>
     public class ProtocolOptions
     {
+        /// <summary>
+        /// Maximum allowed time in seconds for any single wsman HTTP operation
+        /// </summary>
         public TimeSpan? OperationTimeout { get; set; }
+
+        /// <summary>
+        /// Maximum response size in bytes. 
+        /// </summary>
         public int? MaxEnvelopeSize { get; set; }
-        public string? Locale { get; set; }
+
     }
 
     public class Protocol : IProtocol
@@ -22,28 +32,41 @@ namespace WinRMSharp
         private static readonly int DefaultMaxEnvelopeSize = 153600;
         private static readonly string DefaultLocale = "en-US";
 
-        public IGuidProvider GuidProvider { get; private set; }
+        private readonly IGuidProvider _guidProvider;
+
+        /// <inheritdoc cref="IProtocol.Transport" />
         public ITransport Transport { get; private set; }
 
+        /// <summary>
+        /// Maximum allowed time in seconds for any single wsman HTTP operation
+        /// </summary>
         public TimeSpan OperationTimeout { get; }
+
+        /// <summary>
+        /// Maximum response size in bytes. 
+        /// </summary>
         public int MaxEnvelopeSize { get; }
-        public string Locale { get; }
 
         internal Protocol(ITransport transport, IGuidProvider guidProvider, ProtocolOptions? options = null)
         {
-            GuidProvider = guidProvider;
+            _guidProvider = guidProvider;
             Transport = transport;
 
             OperationTimeout = options?.OperationTimeout ?? DefaultOperationTimeout;
             MaxEnvelopeSize = options?.MaxEnvelopeSize ?? DefaultMaxEnvelopeSize;
-            Locale = options?.Locale ?? DefaultLocale;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Porotocol"/> class.
+        /// </summary>
+        /// <param name="transport">Network transport used for sending/receiving SOAP requests/responses.</param>
+        /// <param name="options">Options to configure instance.</param>
         public Protocol(ITransport transport, ProtocolOptions? options = null)
             : this(transport, new GuidProvider(), options)
         {
         }
 
+        /// <inheritdoc cref="IProtocol.OpenShell" />
         public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null,  Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
@@ -94,13 +117,7 @@ namespace WinRMSharp
             return shellId!;
         }
 
-        /// <summary>
-        /// Run a command on a machine with an open shell. See <see cref="OpenShell(string, string, string)"/>
-        /// </summary>
-        /// <param name="shellId">The shell id on the remote machine.</param>
-        /// <param name="command">The command to run on the remote machine.</param>
-        /// <param name="args">An array of arguments for the command.</param>
-        /// <returns>The commandId needed to query the output.</returns>
+        /// <inheritdoc cref="IProtocol.RunCommand" />
         public async Task<string> RunCommand(string shellId, string command, string[]? args = null)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
@@ -145,6 +162,7 @@ namespace WinRMSharp
             return commandId;
         }
 
+        /// <inheritdoc cref="IProtocol.SendCommandInput" />
         public async Task SendCommandInput(string shellId, string commandId, string input, bool end = false)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
@@ -171,6 +189,7 @@ namespace WinRMSharp
             await Send(envelope);
         }
 
+        /// <inheritdoc cref="IProtocol.PollCommandState" />
         public async Task<CommandState> PollCommandState(string shellId, string commandId)
         {
             StringBuilder stdoutBuilder = new StringBuilder();
@@ -210,6 +229,7 @@ namespace WinRMSharp
             };
         }
 
+        /// <inheritdoc cref="IProtocol.GetCommandState" />
         public async Task<CommandState> GetCommandState(string shellId, string commandId)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
@@ -268,11 +288,7 @@ namespace WinRMSharp
             };
         }
 
-        /// <summary>
-        /// Close the shell.
-        /// </summary>
-        /// <param name="shellId">The shell id on the remote machine.</param>
-        /// <returns></returns>
+        /// <inheritdoc cref="IProtocol.CloseShell" />
         public async Task CloseShell(string shellId)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
@@ -301,14 +317,8 @@ namespace WinRMSharp
             }
         }
 
-        /// <summary>
-        /// Cleans up after a command. See <see cref="RunCommand(string, string, string[], bool, bool)"></see>
-        /// </summary>
-        /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell(string, string, string)"/></param>
-        /// <param name="commandId">The command id on the remote machine. See <see cref="RunCommand(string, string, string[], bool, bool)"/></param>
-        /// <returns></returns>
-        /// <exception cref="WinRMException"></exception>
-        public async Task CleanupCommand(string shellId, string commandId)
+        /// <inheritdoc cref="IProtocol.CloseCommand" />
+        public async Task CloseCommand(string shellId, string commandId)
         {
             const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
             const string action = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal";
@@ -419,7 +429,7 @@ namespace WinRMSharp
 
         private Header GetHeader(string resourceUri, string action, string? shellId = null)
         {
-            string messageId = GuidProvider.NewGuid().ToString();
+            string messageId = _guidProvider.NewGuid().ToString();
 
             var header = new Header()
             {
@@ -441,12 +451,12 @@ namespace WinRMSharp
                 Locale = new Locale()
                 {
                     MustUnderstand = false,
-                    Language = Locale
+                    Language = DefaultLocale
                 },
                 DataLocale = new Locale()
                 {
                     MustUnderstand = false,
-                    Language = Locale
+                    Language = DefaultLocale
                 },
                 OperationTimeout = $"PT{OperationTimeout.TotalSeconds}S",
                 ResourceURI = new ResourceURI()
