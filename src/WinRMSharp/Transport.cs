@@ -57,7 +57,7 @@ namespace WinRMSharp
                     statusCode = (int)response.StatusCode;
                 }
 
-                throw new TransportException(500, content, ex);
+                throw new TransportException(statusCode, content, ex);
             }
         }
 
