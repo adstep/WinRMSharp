@@ -40,7 +40,7 @@ namespace WinRMSharp.IntegrationTests
             string shellId = await _protocol.OpenShell();
             string commandId = await _protocol.RunCommand(shellId, "ipconfig", new string[] { "/all" });
 
-            await _protocol.CleanupCommand(shellId, commandId);
+            await _protocol.CloseCommand(shellId, commandId);
             await _protocol.CloseShell(shellId);
 
             Assert.Matches(@"^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$", commandId);
@@ -52,7 +52,7 @@ namespace WinRMSharp.IntegrationTests
             string shellId = await _protocol.OpenShell();
             string commandId = await _protocol.RunCommand(shellId, "hostname");
 
-            await _protocol.CleanupCommand(shellId, commandId);
+            await _protocol.CloseCommand(shellId, commandId);
             await _protocol.CloseShell(shellId);
 
             Assert.Matches(@"^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$", commandId);
@@ -72,7 +72,7 @@ namespace WinRMSharp.IntegrationTests
 
             CommandState state = await _protocol.PollCommandState(shellId, commandId);
 
-            await _protocol.CleanupCommand(shellId, commandId);
+            await _protocol.CloseCommand(shellId, commandId);
             await _protocol.CloseShell(shellId);
 
             Assert.Matches(@"hi mom another var", state.Stdout);
@@ -86,7 +86,7 @@ namespace WinRMSharp.IntegrationTests
 
             CommandState state = await _protocol.PollCommandState(shellId, commandId);
 
-            await _protocol.CleanupCommand(shellId, commandId);
+            await _protocol.CloseCommand(shellId, commandId);
             await _protocol.CloseShell(shellId);
 
             Assert.Equal(0, state.StatusCode);
@@ -102,7 +102,7 @@ namespace WinRMSharp.IntegrationTests
 
             CommandState state = await _protocol.PollCommandState(shellId, commandId);
 
-            await _protocol.CleanupCommand(shellId, commandId);
+            await _protocol.CloseCommand(shellId, commandId);
             await _protocol.CloseShell(shellId);
 
             Assert.Equal(0, state.StatusCode);

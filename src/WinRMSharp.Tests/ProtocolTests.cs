@@ -26,7 +26,7 @@ namespace WinRMSharp.Tests
             string shellId = await protocol.OpenShell();
             string commandId = await protocol.RunCommand(shellId, "ipconfig", new[] { "/all" });
 
-            await protocol.CleanupCommand(shellId, commandId);
+            await protocol.CloseCommand(shellId, commandId);
             await protocol.CloseShell(shellId);
 
             Assert.Equal("11111111-1111-1111-1111-111111111114", commandId);
@@ -41,7 +41,7 @@ namespace WinRMSharp.Tests
             string shellId = await protocol.OpenShell();
             string commandId = await protocol.RunCommand(shellId, "hostname");
 
-            await protocol.CleanupCommand(shellId, commandId);
+            await protocol.CloseCommand(shellId, commandId);
             await protocol.CloseShell(shellId);
 
             Assert.Equal("11111111-1111-1111-1111-111111111114", commandId);
@@ -57,7 +57,7 @@ namespace WinRMSharp.Tests
             string commandId = await protocol.RunCommand(shellId, "ipconfig", new[] { "/all" });
             CommandState commandState = await protocol.GetCommandState(shellId, commandId);
 
-            await protocol.CleanupCommand(shellId, commandId);
+            await protocol.CloseCommand(shellId, commandId);
             await protocol.CloseShell(shellId);
 
             Assert.NotNull(commandState);
@@ -76,7 +76,7 @@ namespace WinRMSharp.Tests
             string commandId = await protocol.RunCommand(shellId, "ipconfig", new[] { "/all" });
             CommandState commandState = await protocol.PollCommandState(shellId, commandId);
 
-            await protocol.CleanupCommand(shellId, commandId);
+            await protocol.CloseCommand(shellId, commandId);
             await protocol.CloseShell(shellId);
 
             Assert.NotNull(commandState);
@@ -96,7 +96,7 @@ namespace WinRMSharp.Tests
             await protocol.SendCommandInput(shellId, commandId, "echo \"hello world\" && exit\\r\\n");
             CommandState commandState = await protocol.GetCommandState(shellId, commandId);
 
-            await protocol.CleanupCommand(shellId, commandId);
+            await protocol.CloseCommand(shellId, commandId);
             await protocol.CloseShell(shellId);
 
             Assert.NotNull(commandState);
@@ -125,7 +125,7 @@ namespace WinRMSharp.Tests
 
             CommandState state = await protocol.PollCommandState(shellId, commandId);
 
-            await protocol.CleanupCommand(shellId, commandId);
+            await protocol.CloseCommand(shellId, commandId);
             await protocol.CloseShell(shellId);
 
             Assert.Equal(0, state.StatusCode);
@@ -139,7 +139,7 @@ namespace WinRMSharp.Tests
             MockClient mockClient = new MockClient();
             Protocol protocol = new Protocol(mockClient.Transport.Object, mockClient.GuidProvider.Object);
 
-            await protocol.CleanupCommand("11111111-1111-1111-1111-111111111113", "11111111-1111-1111-1111-111111111117");
+            await protocol.CloseCommand("11111111-1111-1111-1111-111111111113", "11111111-1111-1111-1111-111111111117");
 
             // We've setup the transport to return a failure and we're just checcking an exception doesn't bubble up
         }

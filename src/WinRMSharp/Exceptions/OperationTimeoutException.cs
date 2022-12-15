@@ -1,6 +1,6 @@
 ﻿namespace WinRMSharp.Exceptions
 {
-    internal class OperationTimeoutException : Exception
+    internal class OperationTimeoutException : WinRMException
     {
         public OperationTimeoutException()
         {

@@ -6,7 +6,7 @@ namespace WinRMSharp.Tests
     public class WinRMClientTests
     {
         [Fact]
-        public void VerifyConstruciton()
+        public void VerifyConstruction()
         {
             string baseUrl = "https://localhost:5986";
             ICredentials credentials = new NetworkCredential()
@@ -17,7 +17,6 @@ namespace WinRMSharp.Tests
             };
             WinRMClientOptions clientOptions = new WinRMClientOptions()
             {
-                Locale = "en-US",
                 MaxEnvelopeSize = 1,
                 OperationTimeout = TimeSpan.FromSeconds(20),
                 ReadTimeout = TimeSpan.FromSeconds(30)

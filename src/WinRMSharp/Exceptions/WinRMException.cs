@@ -1,5 +1,8 @@
 ﻿namespace WinRMSharp.Exceptions
 {
+    /// <summary>
+    /// Base exeception for encapsulating all WinRM exceptions.
+    /// </summary>
     public class WinRMException : Exception
     {
         public WinRMException()

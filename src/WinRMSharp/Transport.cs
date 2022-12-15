@@ -5,8 +5,14 @@ using WinRMSharp.Exceptions;
 
 namespace WinRMSharp
 {
+    /// <summary>
+    /// Options used to configure a <see cref="Transport"/> instance.
+    /// </summary>
     public class TransportOptions
     {
+        /// <summary>
+        /// Maximum timeout to wait before an HTTP connect/read times out.
+        /// </summary>
         public TimeSpan? ReadTimeout { get; set; }
     }
 
@@ -16,6 +22,12 @@ namespace WinRMSharp
 
         private readonly HttpClient _httpClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Transport"/> class.
+        /// </summary>
+        /// <param name="baseUrl">Base url of the destination host.</param>
+        /// <param name="credentials">Credentials used to secure communication to the destination host.</param>
+        /// <param name="options">Transport options.</param>
         public Transport(string baseUrl, ICredentials credentials, TransportOptions? options = null)
             : this(baseUrl, GenerateSecureHandler(credentials), options)
         {
@@ -30,6 +42,7 @@ namespace WinRMSharp
             };
         }
 
+        /// <inheritdoc cref="ITransport.Send" />
         public async Task<string> Send(string message)
         {
             StringContent data = new StringContent(message, Encoding.UTF8, "application/soap+xml");
