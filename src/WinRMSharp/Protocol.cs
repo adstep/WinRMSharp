@@ -22,6 +22,8 @@ namespace WinRMSharp
         private static readonly int DefaultMaxEnvelopeSize = 153600;
         private static readonly string DefaultLocale = "en-US";
 
+        private const string RESOURCE_URI = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
+
         public IGuidProvider GuidProvider { get; private set; }
         public ITransport Transport { get; private set; }
 
@@ -46,15 +48,12 @@ namespace WinRMSharp
 
         public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null, Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null)
         {
-            const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
-            const string action = "http://schemas.xmlsoap.org/ws/2004/09/transfer/Create";
-
             const bool noProfile = false;
             const int codePage = 437;
 
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Create),
                 Body = new Body()
                 {
                     Shell = new Shell()
@@ -103,12 +102,9 @@ namespace WinRMSharp
         /// <returns>The commandId needed to query the output.</returns>
         public async Task<string> RunCommand(string shellId, string command, string[]? args = null)
         {
-            const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
-            const string action = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command";
-
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action, shellId),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Command, shellId),
                 Body = new Body()
                 {
                     CommandLine = new CommandLine()
@@ -147,12 +143,9 @@ namespace WinRMSharp
 
         public async Task SendCommandInput(string shellId, string commandId, string input, bool end = false)
         {
-            const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
-            const string action = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Send";
-
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action, shellId),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Send, shellId),
                 Body = new Body()
                 {
                     Send = new Send()
@@ -214,12 +207,9 @@ namespace WinRMSharp
 
         public async Task<CommandState> GetCommandState(string shellId, string commandId)
         {
-            const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
-            const string action = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Receive";
-
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action, shellId),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Receive, shellId),
                 Body = new Body()
                 {
                     Receive = new Receive()
@@ -277,12 +267,9 @@ namespace WinRMSharp
         /// <returns></returns>
         public async Task CloseShell(string shellId)
         {
-            const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
-            const string action = "http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete";
-
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action, shellId),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Delete, shellId),
                 Body = new Body()
             };
 
@@ -312,12 +299,9 @@ namespace WinRMSharp
         /// <exception cref="WinRMException"></exception>
         public async Task CleanupCommand(string shellId, string commandId)
         {
-            const string resourceUri = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
-            const string action = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal";
-
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(resourceUri, action, shellId),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Signal, shellId),
                 Body = new Body()
                 {
                     Signal = new Signal()
@@ -325,7 +309,7 @@ namespace WinRMSharp
                         CommandId = commandId,
                         Code = new Code()
                         {
-                            Value = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/signal/terminate"
+                            Value = SignalCode.Terminate
                         }
                     }
                 }
@@ -395,7 +379,7 @@ namespace WinRMSharp
                     XElement? wsmanFault = fault.XPathSelectElement("//soapenv:Detail/wsmanfault:WSManFault", nsmgr);
                     string? wsmanFaultCode = wsmanFault?.Attribute("Code")?.Value;
 
-                    if (wsmanFaultCode == WsmanFault.OperationTimeout)
+                    if (wsmanFaultCode == WSManFault.OperationTimeout)
                         throw new OperationTimeoutException();
 
                     string? faultCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Value", nsmgr)?.Value;

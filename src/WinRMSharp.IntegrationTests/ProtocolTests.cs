@@ -5,7 +5,7 @@ namespace WinRMSharp.IntegrationTests
 {
     public class ProtocolTests
     {
-        private Protocol _protocol;
+        private readonly Protocol _protocol;
 
         public ProtocolTests()
         {

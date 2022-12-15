@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using WinRMSharp.Test;
 using Xunit;
 
 namespace WinRMSharp.Tests

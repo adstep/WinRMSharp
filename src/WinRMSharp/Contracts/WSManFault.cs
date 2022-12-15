@@ -1,6 +1,6 @@
-﻿namespace WinRMSharp.Utils
+﻿namespace WinRMSharp.Contracts
 {
-    public class WsmanFault
+    public class WSManFault
     {
 #pragma warning disable IDE1006 // Naming Styles
         public const string OperationTimeout = "2150858793";

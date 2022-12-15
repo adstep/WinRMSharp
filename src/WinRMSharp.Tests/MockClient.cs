@@ -1,11 +1,9 @@
 ﻿using Moq;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using WinRMSharp.Exceptions;
-using WinRMSharp.Tests;
 using WinRMSharp.Utils;
 
-namespace WinRMSharp.Test
+namespace WinRMSharp.Tests
 {
     public class MockClient
     {
@@ -28,66 +26,66 @@ namespace WinRMSharp.Test
         {
             //message = Patch(message);
 
-            XDocument env = Xml.Parse(message);
+            XDocument env = message.Parse();
 
             // WARNING: Despite being contrary to the XML standard, DeepEquals only
             // evaluates two nodes as equal if all attributes are in matching order.
             // See https://github.com/dotnet/dotnet-api-docs/issues/830
-            if (XNode.DeepEquals(env, Xml.Parse(Config.OPEN_SHELL_REQUEST)))
+            if (XNode.DeepEquals(env, Config.OPEN_SHELL_REQUEST.Parse()))
             {
                 return Config.OPEN_SHELL_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.CLOSE_SHELL_REQUEST)))
+            else if (XNode.DeepEquals(env, Config.CLOSE_SHELL_REQUEST.Parse()))
             {
                 return Config.CLOSE_SHELL_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.RUN_CMD_WITH_ARGS_REQUEST)) || XNode.DeepEquals(env, Xml.Parse(Config.RUN_CMD_WO_ARGS_REQUEST)))
+            else if (XNode.DeepEquals(env, Config.RUN_CMD_WITH_ARGS_REQUEST.Parse()) || XNode.DeepEquals(env, Config.RUN_CMD_WO_ARGS_REQUEST.Parse()))
             {
                 return string.Format(Config.RUN_CMD_PS_RESPONSE, "1");
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "1"))) || 
-                XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "2"))) ||
-                XNode.DeepEquals(env, Xml.Parse(string.Format(Config.CLEANUP_CMD_REQUEST, "3"))))
+            else if (XNode.DeepEquals(env, string.Format(Config.CLEANUP_CMD_REQUEST, "1").Parse()) ||
+                XNode.DeepEquals(env, string.Format(Config.CLEANUP_CMD_REQUEST, "2").Parse()) ||
+                XNode.DeepEquals(env, string.Format(Config.CLEANUP_CMD_REQUEST, "3").Parse()))
             {
                 return Config.CLEANUP_CMD_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(string.Format(Config.GET_CMD_PS_OUTPUT_REQUEST, "1"))))
+            else if (XNode.DeepEquals(env, string.Format(Config.GET_CMD_PS_OUTPUT_REQUEST, "1").Parse()))
             {
                 return Config.GET_CMD_OUTPUT_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(string.Format(Config.GET_CMD_PS_OUTPUT_REQUEST, "2"))))
+            else if (XNode.DeepEquals(env, string.Format(Config.GET_CMD_PS_OUTPUT_REQUEST, "2").Parse()))
             {
                 return Config.GET_PS_OUTPUT_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.RUN_CMD_REQ_INPUT)))
+            else if (XNode.DeepEquals(env, Config.RUN_CMD_REQ_INPUT.Parse()))
             {
                 return Config.RUN_CMD_REQ_INPUT_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.RUN_CMD_SEND_INPUT)))
+            else if (XNode.DeepEquals(env, Config.RUN_CMD_SEND_INPUT.Parse()))
             {
                 return Config.RUN_CMD_SEND_INPUT_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.RUN_CMD_SEND_INPUT_GET_OUTPUT)))
+            else if (XNode.DeepEquals(env, Config.RUN_CMD_SEND_INPUT_GET_OUTPUT.Parse()))
             {
                 return Config.RUN_CMD_SEND_INPUT_GET_OUTPUT_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.STDIN_CMD_CLEANUP)))
+            else if (XNode.DeepEquals(env, Config.STDIN_CMD_CLEANUP.Parse()))
             {
                 return Config.STDIN_CMD_CLEANUP_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.OPERATION_TIMEOUT_REQUEST)))
+            else if (XNode.DeepEquals(env, Config.OPERATION_TIMEOUT_REQUEST.Parse()))
             {
                 return Config.OPERATION_TIMEOUT_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.OPERATION_TIMEOUT_GET_0_REQUEST)))
+            else if (XNode.DeepEquals(env, Config.OPERATION_TIMEOUT_GET_0_REQUEST.Parse()))
             {
                 throw new TransportException(500, Config.OPERATION_TIMEOUT_GET_0_RESPONSE);
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.OPERATION_TIMEOUT_GET_1_REQUEST)))
+            else if (XNode.DeepEquals(env, Config.OPERATION_TIMEOUT_GET_1_REQUEST.Parse()))
             {
                 return Config.OPERATION_TIMEOUT_GET_1_RESPONSE;
             }
-            else if (XNode.DeepEquals(env, Xml.Parse(Config.CLOSE_COMMAND_FAULT_REQUEST)))
+            else if (XNode.DeepEquals(env, Config.CLOSE_COMMAND_FAULT_REQUEST.Parse()))
             {
                 throw new TransportException(500, Config.CLOSE_COMMAND_FAULT_RESPONSE);
             }

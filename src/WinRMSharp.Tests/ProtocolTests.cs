@@ -1,5 +1,4 @@
 ﻿using Moq;
-using WinRMSharp.Test;
 using Xunit;
 
 namespace WinRMSharp.Tests
