@@ -20,6 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="YamlDotNet" Version="12.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +28,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Sessions\GetCommandState.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sessions\OpenCloseShell.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sessions\RunCommandExceedingOperationTimeout.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sessions\RunCommandWithArgsAndCleanup.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sessions\RunCommandWithEnv.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sessions\RunCommandWithoutArgsAndCleanup.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="test.runsettings">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

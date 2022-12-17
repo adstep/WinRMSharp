@@ -5,10 +5,6 @@
     /// </summary>
     public class WinRMException : Exception
     {
-        public WinRMException()
-        {
-        }
-
         public WinRMException(string message)
             : base(message)
         {

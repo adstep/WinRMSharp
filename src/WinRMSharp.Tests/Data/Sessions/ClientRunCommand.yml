@@ -1,0 +1,261 @@
+- Request:
+    Method: POST
+    Url: https://127.0.0.1:5986/wsman
+    Headers: {}
+    Body: >-
+      <?xml version="1.0" encoding="utf-16"?>
+
+      <env:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+        <env:Header>
+          <a:To>http://windows-host:5985/wsman</a:To>
+          <a:ReplyTo>
+            <a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+          </a:ReplyTo>
+          <w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+          <a:MessageID>uuid:00000000-0000-0000-0000-000000000000</a:MessageID>
+          <w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+          <p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+          <w:OperationTimeout>PT5S</w:OperationTimeout>
+          <w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+          <a:Action mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/09/transfer/Create</a:Action>
+          <w:OptionSet />
+        </env:Header>
+        <env:Body>
+          <rsp:Shell>
+            <rsp:InputStreams>stdin</rsp:InputStreams>
+            <rsp:OutputStreams>stdout stderr</rsp:OutputStreams>
+          </rsp:Shell>
+        </env:Body>
+      </env:Envelope>
+  Response:
+    StatusCode: 200
+    Headers:
+      Server: Microsoft-HTTPAPI/2.0
+      Date: Fri, 16 Dec 2022 23:59:38 GMT
+    Body: >-
+      <s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+        <s:Header>
+          <a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/CreateResponse</a:Action>
+          <a:MessageID>uuid:9FC98B52-52C4-4ED9-9012-85DB379BCFDE</a:MessageID>
+          <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+          <a:RelatesTo>uuid:00000000-0000-0000-0000-000000000000</a:RelatesTo>
+        </s:Header>
+        <s:Body>
+          <x:ResourceCreated>
+            <a:Address>http://windows-host:5985/wsman</a:Address>
+            <a:ReferenceParameters>
+              <w:ResourceURI>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+              <w:SelectorSet>
+                <w:Selector Name="ShellId">ADA12553-794F-4424-A469-862987811A49</w:Selector>
+              </w:SelectorSet>
+            </a:ReferenceParameters>
+          </x:ResourceCreated>
+          <rsp:Shell xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell">
+            <rsp:ShellId>ADA12553-794F-4424-A469-862987811A49</rsp:ShellId>
+            <rsp:ResourceUri>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</rsp:ResourceUri>
+            <rsp:Owner>winrm-vm-003\Default</rsp:Owner>
+            <rsp:ClientIP>73.53.37.241</rsp:ClientIP>
+            <rsp:IdleTimeOut>PT7200.000S</rsp:IdleTimeOut>
+            <rsp:InputStreams>stdin</rsp:InputStreams>
+            <rsp:OutputStreams>stdout stderr</rsp:OutputStreams>
+            <rsp:ShellRunTime>P0DT0H0M0S</rsp:ShellRunTime>
+            <rsp:ShellInactivity>P0DT0H0M0S</rsp:ShellInactivity>
+          </rsp:Shell>
+        </s:Body>
+      </s:Envelope>
+- Request:
+    Method: POST
+    Url: https://127.0.0.1:5986/wsman
+    Headers: {}
+    Body: >-
+      <?xml version="1.0" encoding="utf-16"?>
+
+      <env:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+        <env:Header>
+          <a:To>http://windows-host:5985/wsman</a:To>
+          <a:ReplyTo>
+            <a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+          </a:ReplyTo>
+          <w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+          <a:MessageID>uuid:00000000-0000-0000-0000-000000000001</a:MessageID>
+          <w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+          <p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+          <w:OperationTimeout>PT5S</w:OperationTimeout>
+          <w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+          <a:Action mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command</a:Action>
+          <w:OptionSet>
+            <w:Option Name="WINRS_CONSOLEMODE_STDIN">TRUE</w:Option>
+            <w:Option Name="WINRS_SKIP_CMD_SHELL">FALSE</w:Option>
+          </w:OptionSet>
+          <w:SelectorSet>
+            <w:Selector Name="ShellId">ADA12553-794F-4424-A469-862987811A49</w:Selector>
+          </w:SelectorSet>
+        </env:Header>
+        <env:Body>
+          <rsp:CommandLine>
+            <rsp:Command>dir</rsp:Command>
+          </rsp:CommandLine>
+        </env:Body>
+      </env:Envelope>
+  Response:
+    StatusCode: 200
+    Headers:
+      Server: Microsoft-HTTPAPI/2.0
+      Date: Fri, 16 Dec 2022 23:59:38 GMT
+    Body: >-
+      <s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+        <s:Header>
+          <a:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandResponse</a:Action>
+          <a:MessageID>uuid:77FC2295-5BB1-4580-9964-80FEA109DCBF</a:MessageID>
+          <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+          <a:RelatesTo>uuid:00000000-0000-0000-0000-000000000001</a:RelatesTo>
+        </s:Header>
+        <s:Body>
+          <rsp:CommandResponse>
+            <rsp:CommandId>AF4A5D9F-66E7-443A-9D27-0B58632FBA3E</rsp:CommandId>
+          </rsp:CommandResponse>
+        </s:Body>
+      </s:Envelope>
+- Request:
+    Method: POST
+    Url: https://127.0.0.1:5986/wsman
+    Headers: {}
+    Body: >-
+      <?xml version="1.0" encoding="utf-16"?>
+
+      <env:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+        <env:Header>
+          <a:To>http://windows-host:5985/wsman</a:To>
+          <a:ReplyTo>
+            <a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+          </a:ReplyTo>
+          <w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+          <a:MessageID>uuid:00000000-0000-0000-0000-000000000002</a:MessageID>
+          <w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+          <p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+          <w:OperationTimeout>PT5S</w:OperationTimeout>
+          <w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+          <a:Action mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Receive</a:Action>
+          <w:SelectorSet>
+            <w:Selector Name="ShellId">ADA12553-794F-4424-A469-862987811A49</w:Selector>
+          </w:SelectorSet>
+        </env:Header>
+        <env:Body>
+          <rsp:Receive>
+            <rsp:DesiredStream CommandId="AF4A5D9F-66E7-443A-9D27-0B58632FBA3E">stdout stderr</rsp:DesiredStream>
+          </rsp:Receive>
+        </env:Body>
+      </env:Envelope>
+  Response:
+    StatusCode: 200
+    Headers:
+      Server: Microsoft-HTTPAPI/2.0
+      Date: Fri, 16 Dec 2022 23:59:38 GMT
+    Body: >-
+      <s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+        <s:Header>
+          <a:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/ReceiveResponse</a:Action>
+          <a:MessageID>uuid:028A6385-434F-4B1A-848A-07A06CB78852</a:MessageID>
+          <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+          <a:RelatesTo>uuid:00000000-0000-0000-0000-000000000002</a:RelatesTo>
+        </s:Header>
+        <s:Body>
+          <rsp:ReceiveResponse>
+            <rsp:Stream Name="stdout" CommandId="AF4A5D9F-66E7-443A-9D27-0B58632FBA3E">IFZvbHVtZSBpbiBkcml2ZSBDIGlzIFdpbmRvd3MNCg==</rsp:Stream>
+            <rsp:Stream Name="stdout" CommandId="AF4A5D9F-66E7-443A-9D27-0B58632FBA3E">IFZvbHVtZSBTZXJpYWwgTnVtYmVyIGlzIDA4MkYtNDg1Qw0KDQogRGlyZWN0b3J5IG9mIEM6XFVzZXJzXERlZmF1bHQud2lucm0tdm0tMDAzDQoNCjEyLzE2LzIwMjIgIDExOjU3IFBNICAgIDxESVI+ICAgICAgICAgIC4NCjEyLzE2LzIwMjIgIDExOjU3IFBNICAgIDxESVI+ICAgICAgICAgIC4uDQowNS8wNy8yMDIyICAwNToyNCBBTSAgICA8RElSPiAgICAgICAgICBEZXNrdG9wDQoxMi8xNi8yMDIyICAxMTo1NyBQTSAgICA8RElSPiAgICAgICAgICBEb2N1bWVudHMNCjA1LzA3LzIwMjIgIDA1OjI0IEFNICAgIDxESVI+ICAgICAgICAgIERvd25sb2Fkcw0KMDUvMDcvMjAyMiAgMDU6MjQgQU0gICAgPERJUj4gICAgICAgICAgRmF2b3JpdGVzDQowNS8wNy8yMDIyICAwNToyNCBBTSAgICA8RElSPiAgICAgICAgICBMaW5rcw0KMDUvMDcvMjAyMiAgMDU6MjQgQU0gICAgPERJUj4gICAgICAgICAgTXVzaWMNCjA1LzA3LzIwMjIgIDA1OjI0IEFNICAgIDxESVI+ICAgICAgICAgIFBpY3R1cmVzDQowNS8wNy8yMDIyICAwNToyNCBBTSAgICA8RElSPiAgICAgICAgICBTYXZlZCBHYW1lcw0KMDUvMDcvMjAyMiAgMDU6MjQgQU0gICAgPERJUj4gICAgICAgICAgVmlkZW9zDQogICAgICAgICAgICAgICAwIEZpbGUocykgICAgICAgICAgICAgIDAgYnl0ZXMNCiAgICAgICAgICAgICAgMTEgRGlyKHMpICAxMTYsNDI5LDIzNCwxNzYgYnl0ZXMgZnJlZQ0K</rsp:Stream>
+            <rsp:Stream Name="stdout" CommandId="AF4A5D9F-66E7-443A-9D27-0B58632FBA3E" End="true"></rsp:Stream>
+            <rsp:Stream Name="stderr" CommandId="AF4A5D9F-66E7-443A-9D27-0B58632FBA3E" End="true"></rsp:Stream>
+            <rsp:CommandState CommandId="AF4A5D9F-66E7-443A-9D27-0B58632FBA3E" State="http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandState/Done">
+              <rsp:ExitCode>0</rsp:ExitCode>
+            </rsp:CommandState>
+          </rsp:ReceiveResponse>
+        </s:Body>
+      </s:Envelope>
+- Request:
+    Method: POST
+    Url: https://127.0.0.1:5986/wsman
+    Headers: {}
+    Body: >-
+      <?xml version="1.0" encoding="utf-16"?>
+
+      <env:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+        <env:Header>
+          <a:To>http://windows-host:5985/wsman</a:To>
+          <a:ReplyTo>
+            <a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+          </a:ReplyTo>
+          <w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+          <a:MessageID>uuid:00000000-0000-0000-0000-000000000003</a:MessageID>
+          <w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+          <p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+          <w:OperationTimeout>PT5S</w:OperationTimeout>
+          <w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+          <a:Action mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal</a:Action>
+          <w:SelectorSet>
+            <w:Selector Name="ShellId">ADA12553-794F-4424-A469-862987811A49</w:Selector>
+          </w:SelectorSet>
+        </env:Header>
+        <env:Body>
+          <rsp:Signal CommandId="AF4A5D9F-66E7-443A-9D27-0B58632FBA3E">
+            <rsp:Code>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/signal/terminate</rsp:Code>
+          </rsp:Signal>
+        </env:Body>
+      </env:Envelope>
+  Response:
+    StatusCode: 200
+    Headers:
+      Server: Microsoft-HTTPAPI/2.0
+      Date: Fri, 16 Dec 2022 23:59:38 GMT
+    Body: >-
+      <s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+        <s:Header>
+          <a:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/SignalResponse</a:Action>
+          <a:MessageID>uuid:FAF71E83-B2A0-4AB4-BC3C-FDC4CAD6E4D4</a:MessageID>
+          <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+          <a:RelatesTo>uuid:00000000-0000-0000-0000-000000000003</a:RelatesTo>
+        </s:Header>
+        <s:Body>
+          <rsp:SignalResponse />
+        </s:Body>
+      </s:Envelope>
+- Request:
+    Method: POST
+    Url: https://127.0.0.1:5986/wsman
+    Headers: {}
+    Body: >-
+      <?xml version="1.0" encoding="utf-16"?>
+
+      <env:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:b="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell" xmlns:cfg="http://schemas.microsoft.com/wbem/wsman/1/config" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+        <env:Header>
+          <a:To>http://windows-host:5985/wsman</a:To>
+          <a:ReplyTo>
+            <a:Address mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+          </a:ReplyTo>
+          <w:MaxEnvelopeSize a:mustUnderstand="true">153600</w:MaxEnvelopeSize>
+          <a:MessageID>uuid:00000000-0000-0000-0000-000000000004</a:MessageID>
+          <w:Locale a:mustUnderstand="false" xml:lang="en-US" />
+          <p:DataLocale a:mustUnderstand="false" xml:lang="en-US" />
+          <w:OperationTimeout>PT5S</w:OperationTimeout>
+          <w:ResourceURI a:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</w:ResourceURI>
+          <a:Action mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete</a:Action>
+          <w:SelectorSet>
+            <w:Selector Name="ShellId">ADA12553-794F-4424-A469-862987811A49</w:Selector>
+          </w:SelectorSet>
+        </env:Header>
+        <env:Body />
+      </env:Envelope>
+  Response:
+    StatusCode: 200
+    Headers:
+      Server: Microsoft-HTTPAPI/2.0
+      Date: Fri, 16 Dec 2022 23:59:38 GMT
+    Body: >-
+      <s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+        <s:Header>
+          <a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/DeleteResponse</a:Action>
+          <a:MessageID>uuid:480B0078-7189-47C1-9AD8-D0D67C696F25</a:MessageID>
+          <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+          <a:RelatesTo>uuid:00000000-0000-0000-0000-000000000004</a:RelatesTo>
+        </s:Header>
+        <s:Body></s:Body>
+      </s:Envelope>

@@ -22,6 +22,9 @@ namespace WinRMSharp
 
         private readonly HttpClient _httpClient;
 
+        /// <inheritdoc cref="ITransport.Transport" />
+        public TimeSpan ReadTimeout => _httpClient.Timeout;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Transport"/> class.
         /// </summary>
@@ -30,6 +33,11 @@ namespace WinRMSharp
         /// <param name="options">Transport options.</param>
         public Transport(string baseUrl, ICredentials credentials, TransportOptions? options = null)
             : this(baseUrl, GenerateSecureHandler(credentials), options)
+        {
+        }
+
+        internal Transport(string baseUrl, DelegatingHandler wrapper, ICredentials credentials, TransportOptions? options = null)
+            : this(baseUrl, GenerateWrappedHandler(wrapper, GenerateSecureHandler(credentials)), options)
         {
         }
 
@@ -47,7 +55,11 @@ namespace WinRMSharp
         {
             StringContent data = new StringContent(message, Encoding.UTF8, "application/soap+xml");
 
+            //OnMessage?.Invoke($"Sending message: '{message}'");
+
             using HttpResponseMessage response = await _httpClient.PostAsync("wsman", data).ConfigureAwait(false);
+
+            //OnMessage?.Invoke($"Receiving message: '{await response.Content.ReadAsStringAsync()}'");
 
             try
             {
@@ -74,7 +86,13 @@ namespace WinRMSharp
             }
         }
 
-        private static HttpClientHandler GenerateSecureHandler(ICredentials credentials)
+        private static DelegatingHandler GenerateWrappedHandler(DelegatingHandler wrapper, HttpMessageHandler inner)
+        {
+            wrapper.InnerHandler = inner;
+            return wrapper;
+        }
+
+        private static HttpMessageHandler GenerateSecureHandler(ICredentials credentials)
         {
             return new HttpClientHandler()
             {

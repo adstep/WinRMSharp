@@ -5,16 +5,17 @@
     /// </summary>
     internal class WSManFaultException : WinRMException
     {
-        public string? FaultCode { get; set; }
-        public string? FaultSubCode { get; set; }
-        public string? FaultDescription { get; set; }
+        public string? Code { get; set; }
+        public string? SubCode { get; set; }
+        public string? Machine { get; set; }
+        public string? Reason { get; set; }
+        public string? FaultMessage { get; set; }
+        public string? Provider { get; set; }
+        public string? ProviderPath { get; set; }
+        public string? ProviderFault { get; set; }
 
-        public WSManFaultException(string? faultCode, string? faultSubCode, string? faultDescription, string message)
-            : base(message)
+        public WSManFaultException(Exception innerException) : base("WSManFaultException", innerException)
         {
-            FaultCode = faultCode;
-            FaultSubCode = faultSubCode;
-            FaultDescription = faultDescription;
         }
     }
 }

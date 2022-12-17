@@ -7,6 +7,11 @@
     public interface ITransport
     {
         /// <summary>
+        /// Maximum timeout to wait before an HTTP connect/read times out.
+        /// </summary>
+        TimeSpan ReadTimeout { get; }
+
+        /// <summary>
         /// Sends an XML message to the destination host.
         /// </summary>
         /// <param name="message">XML request message to send</param>

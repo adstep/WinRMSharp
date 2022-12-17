@@ -4,6 +4,7 @@
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\test.runsettings</RunSettingsFilePath>
     <LangVersion>11.0</LangVersion>
     <IsPackable>false</IsPackable>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
@@ -35,10 +36,60 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="YamlDotNet" Version="12.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WinRMSharp\WinRMSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\Sessions\ClientRunCommand.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ClientRunCommandWithArgs.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ClientRunCommandWithEnvironment.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolGetCommandState.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolGetCommandStateBeforeRun.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolOpenCloseShell.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolRunCommandExceedingOperationTimeout.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolRunCommandWithArgsAndCleanup.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolRunCommandWithCommandInput.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolRunCommandWithEnv.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolRunCommandWithNoProfile.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolRunCommandWithoutArgsAndCleanup.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Sessions\ProtocolRunCommandWithUnicode.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="test.runsettings">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Sessions\" />
   </ItemGroup>
 
 </Project>

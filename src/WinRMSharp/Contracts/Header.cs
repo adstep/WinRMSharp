@@ -33,7 +33,7 @@ namespace WinRMSharp.Contracts
         public required Action Action { get; set; }
 
         [XmlArray(Namespace = Namespace.WSMAN_0)]
-        public Option[]? OptionSet { get; set; }
+        public List<Option>? OptionSet { get; set; }
 
         [XmlElement(Namespace = Namespace.WSMAN_0)]
         public SelectorSet? SelectorSet { get; set; }

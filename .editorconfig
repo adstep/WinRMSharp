@@ -224,6 +224,9 @@ dotnet_analyzer_diagnostic.category-CodeQuality.severity = warning
 # IDE0011: Add braces to 'if' statement
 dotnet_diagnostic.IDE0011.severity = silent
 
+# IDE0045: 'if' statement can be simplified
+dotnet_diagnostic.IDE0045.severity = silent
+
 # IDE0046: 'if' statement can be simplified
 dotnet_diagnostic.IDE0046.severity = silent
 
@@ -232,6 +235,9 @@ dotnet_diagnostic.IDE0058.severity = silent
 
 # IDE0065: Using directives must be placed outside of a namespace declaration
 dotnet_diagnostic.IDE0065.severity = silent
+
+# IDE0078: Use pattern matching
+dotnet_diagnostic.IDE0078.severity = silent
 
 # C++ Files
 [*.{cpp,h,in}]

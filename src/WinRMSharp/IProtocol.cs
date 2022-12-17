@@ -12,15 +12,27 @@
         ITransport Transport { get; }
 
         /// <summary>
+        /// Maximum allowed time in seconds for any single wsman HTTP operation
+        /// </summary>
+        TimeSpan OperationTimeout { get; }
+
+        /// <summary>
+        /// Maximum response size in bytes. 
+        /// </summary>
+        int MaxEnvelopeSize { get; }
+
+        /// <summary>
         /// Open a shell instance on the destination host.
         /// </summary>
         /// <param name="inputStream">Input streams to open.</param>
         /// <param name="outputStream">Output streams to open.</param>
         /// <param name="workingDirectory">Working directory of shell.</param>
-        /// <param name="envVars">Environment variables of shell.</param>
+        /// <param name="environment">Environment variables of shell.</param>
         /// <param name="idleTimeout">Time length before shell is closed, if unused.</param>
+        /// <param name="codePage">Encoding of the output std buffers. Correlates to the codepage of the host. en-US traditionally maps to 437.</param>
+        /// <param name="noProfile">Whether to create the shell with the user profile active or not.</param>
         /// <returns>Identifier for opened shell.</returns>
-        Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null, Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null);
+        Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null, Dictionary<string, string>? environment = null, TimeSpan? idleTimeout = null, int? codePage = null, bool? noProfile = null);
 
         /// <summary>
         /// Run a command in an opened shell on the destination host.

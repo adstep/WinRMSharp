@@ -2,9 +2,9 @@
 <RunSettings>
     <RunConfiguration>
         <EnvironmentVariables>
-            <WINRM_BASE_URL></WINRM_BASE_URL>
-            <WINRM_USERNAME></WINRM_USERNAME>
-            <WINRM_PASSWORD></WINRM_PASSWORD>
+            <WINRM_BASE_URL>https://4.154.47.156:5986</WINRM_BASE_URL>
+            <WINRM_USERNAME>asuvpUser</WINRM_USERNAME>
+            <WINRM_PASSWORD>AdventureTime1</WINRM_PASSWORD>
         </EnvironmentVariables>
     </RunConfiguration>
 </RunSettings>

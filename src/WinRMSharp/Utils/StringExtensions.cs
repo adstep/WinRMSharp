@@ -4,16 +4,16 @@ namespace WinRMSharp.Utils
 {
     internal static class StringExtensions
     {
-        public static string EncodeBase64(this string value)
+        public static string EncodeBase64(this string value, Encoding encoding)
         {
-            byte[] valueBytes = Encoding.UTF8.GetBytes(value);
+            byte[] valueBytes = encoding.GetBytes(value);
             return Convert.ToBase64String(valueBytes);
         }
 
-        public static string DecodeBase64(this string value)
+        public static string DecodeBase64(this string value, Encoding encoding)
         {
             byte[] valueBytes = Convert.FromBase64String(value);
-            return Encoding.UTF8.GetString(valueBytes);
+            return encoding.GetString(valueBytes);
         }
     }
 }

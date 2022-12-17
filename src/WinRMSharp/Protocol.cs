@@ -30,6 +30,8 @@ namespace WinRMSharp
     {
         private const string RESOURCE_URI = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
 
+        private static readonly Encoding Encoding = Encoding.UTF8;
+
         private static readonly TimeSpan DefaultOperationTimeout = TimeSpan.FromSeconds(20);
         private static readonly int DefaultMaxEnvelopeSize = 153600;
         private static readonly string DefaultLocale = "en-US";
@@ -39,16 +41,28 @@ namespace WinRMSharp
         /// <inheritdoc cref="IProtocol.Transport" />
         public ITransport Transport { get; private set; }
 
-        /// <summary>
-        /// Maximum allowed time in seconds for any single wsman HTTP operation
-        /// </summary>
+        /// <inheritdoc cref="IProtocol.OperationTimeout" />
         public TimeSpan OperationTimeout { get; }
 
-        /// <summary>
-        /// Maximum response size in bytes. 
-        /// </summary>
+        /// <inheritdoc cref="IProtocol.MaxEnvelopeSize" />
         public int MaxEnvelopeSize { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Protocol"/> class.
+        /// </summary>
+        /// <param name="transport">Network transport used for sending/receiving SOAP requests/responses.</param>
+        /// <param name="options">Options to configure instance.</param>
+        public Protocol(ITransport transport, ProtocolOptions? options = null)
+            : this(transport, new GuidProvider(), options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Protocol"/> class.
+        /// </summary>
+        /// <param name="transport">Network transport used for sending/receiving SOAP requests/responses.</param>
+        /// <param name="guidProvider">Guid generator for stamping outbound request messages.</param>
+        /// <param name="options">Options to configure instance.</param>
         internal Protocol(ITransport transport, IGuidProvider guidProvider, ProtocolOptions? options = null)
         {
             _guidProvider = guidProvider;
@@ -58,22 +72,9 @@ namespace WinRMSharp
             MaxEnvelopeSize = options?.MaxEnvelopeSize ?? DefaultMaxEnvelopeSize;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Porotocol"/> class.
-        /// </summary>
-        /// <param name="transport">Network transport used for sending/receiving SOAP requests/responses.</param>
-        /// <param name="options">Options to configure instance.</param>
-        public Protocol(ITransport transport, ProtocolOptions? options = null)
-            : this(transport, new GuidProvider(), options)
-        {
-        }
-
         /// <inheritdoc cref="IProtocol.OpenShell" />
-        public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null,  Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null)
+        public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null, Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null, int? codePage = null, bool? noProfile = null)
         {
-            const bool noProfile = false;
-            const int codePage = 437;
-
             Envelope envelope = new Envelope()
             {
                 Header = GetHeader(RESOURCE_URI, WSManAction.Create),
@@ -90,19 +91,29 @@ namespace WinRMSharp
                 }
             };
 
-            envelope.Header.OptionSet = new Option[]
+            envelope.Header.OptionSet = new List<Option>();
+
+            if (noProfile.HasValue)
             {
-                new Option()
-                {
-                    Name = "WINRS_NOPROFILE",
-                    Value = noProfile.ToString()
-                },
-                new Option()
-                {
-                    Name = "WINRS_CODEPAGE",
-                    Value = codePage.ToString()
-                }
-            };
+                envelope.Header.OptionSet.Add(
+                    new Option()
+                    {
+                        Name = "WINRS_NOPROFILE",
+                        Value = noProfile.Value.ToString()
+                    }
+                );
+            }
+
+            if (codePage.HasValue)
+            {
+                envelope.Header.OptionSet.Add(
+                    new Option()
+                    {
+                        Name = "WINRS_CODEPAGE",
+                        Value = codePage.Value.ToString()
+                    }
+                );
+            }
 
             XDocument root = await Send(envelope).ConfigureAwait(false);
 
@@ -132,7 +143,7 @@ namespace WinRMSharp
                 }
             };
 
-            envelope.Header.OptionSet = new Option[]
+            envelope.Header.OptionSet = new List<Option>()
             {
                 new Option()
                 {
@@ -173,7 +184,7 @@ namespace WinRMSharp
                             CommandId = commandId,
                             Name = "stdin",
                             End = end,
-                            Value = input.EncodeBase64()
+                            Value = input.EncodeBase64(Encoding)
                         }
                     }
                 }
@@ -208,7 +219,7 @@ namespace WinRMSharp
                         await Task.Delay(TimeSpan.FromMilliseconds(500));
                     }
                 }
-                catch (OperationTimeoutException)
+                catch (WSManFaultException ex) when (ex.Code is Fault.OPERATION_TIMEOUT)
                 {
                     // Expected exception when waiting for a long-running process with no output
                     // Spec says to continue to issue requests for the state immediately
@@ -258,9 +269,9 @@ namespace WinRMSharp
                 string? streamName = stream.Attribute("Name")?.Value;
 
                 if (streamName == "stdout")
-                    stdout.Append(stream.Value.DecodeBase64());
+                    stdout.Append(stream.Value.DecodeBase64(Encoding));
                 else if (streamName == "stderr")
-                    stderr.Append(stream.Value.DecodeBase64());
+                    stderr.Append(stream.Value.DecodeBase64(Encoding));
             }
 
             bool done = root.Descendants().FirstOrDefault(e => e.Attribute("State")?.Value.EndsWith("CommandState/Done") ?? false) != null;
@@ -300,7 +311,7 @@ namespace WinRMSharp
                     throw new WinRMException("Close response id failed to match request");
                 }
             }
-            catch (WSManFaultException ex) when (ex.FaultCode == Fault.SHELL_NOT_FOUND || ex.FaultSubCode == Fault.ERROR_OPERATION_ABORTED)
+            catch (WSManFaultException ex) when (ex.Code is Fault.SHELL_NOT_FOUND or Fault.ERROR_OPERATION_ABORTED)
             {
                 // Ignore
             }
@@ -336,7 +347,7 @@ namespace WinRMSharp
                     throw new WinRMException("Close response id failed to match request");
                 }
             }
-            catch (WSManFaultException fault) when (fault.FaultCode == Fault.SHELL_NOT_FOUND || fault.FaultSubCode == Fault.ERROR_OPERATION_ABORTED)
+            catch (WSManFaultException fault) when (fault.Code == Fault.SHELL_NOT_FOUND || fault.Code == Fault.ERROR_OPERATION_ABORTED)
             {
                 // Ignore
                 // Dont let the cleanup raise so we dont lose any errors from the command
@@ -384,32 +395,49 @@ namespace WinRMSharp
 
                 XElement? fault = root.XPathSelectElement("//soapenv:Body/soapenv:Fault", nsmgr);
 
+                string? code = null;
+                string? machine = null;
+                string? subCode = null;
+                string? reason = null;
+                string? message = null;
+                string? provider = null;
+                string? providerPath = null;
+                string? providerFault = null;
+
                 if (fault != null)
                 {
-                    XElement? wsmanFault = fault.XPathSelectElement("//soapenv:Detail/wsmanfault:WSManFault", nsmgr);
-                    string? wsmanFaultCode = wsmanFault?.Attribute("Code")?.Value;
-
-                    if (wsmanFaultCode == WSManFault.OperationTimeout)
-                        throw new OperationTimeoutException();
-
-                    string? faultCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Value", nsmgr)?.Value;
-                    string? faultSubCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Subcode/soapenv:Value", nsmgr)?.Value;
-
-                    string? errorMessage = fault.XPathSelectElement("//soapenv:Reason/soapenv:Text", nsmgr)?.Value;
-
-                    errorMessage ??= "(no error message in fault)";
-
-                    var faultData = new
-                    {
-                        WsmanFaultCode = wsmanFaultCode,
-                        FaultCode = faultCode,
-                        FaultSubCode = faultSubCode
-                    };
-
-                    throw new WSManFaultException(wsmanFaultCode, faultSubCode, errorMessage, $"{errorMessage} (extended fault data: {faultData}");
+                    code = fault.XPathSelectElement("//soapenv:Code/soapenv:Value", nsmgr)?.Value;
+                    subCode = fault.XPathSelectElement("//soapenv:Code/soapenv:Subcode/soapenv:Value", nsmgr)?.Value;
+                    reason = fault.XPathSelectElement("//soapenv:Reason/soapenv:Text", nsmgr)?.Value;
                 }
 
-                throw new WinRMException($"Failed to extract fault data: {ex.Content}");
+                XElement? wsmanFault = fault?.XPathSelectElement("//soapenv:Detail/wsmanfault:WSManFault", nsmgr);
+                if (wsmanFault != null)
+                {
+                    code = wsmanFault.Attribute("Code")?.Value;
+                    machine = wsmanFault.Attribute("Machine")?.Value;
+                    message = wsmanFault.XPathSelectElement("//wsmanfault:Message", nsmgr)?.Value;
+
+                    XElement? providerInfo = wsmanFault.XPathSelectElement("//wsmanfault:Message/wsmanfault:ProviderFault", nsmgr);
+                    if (providerInfo != null)
+                    {
+                        provider = providerInfo.Attribute("provider")?.Value;
+                        providerPath = providerInfo.Attribute("path")?.Value;
+                        providerFault = providerInfo.Value;
+                    }
+                }
+
+                throw new WSManFaultException(ex)
+                {
+                    Code = code,
+                    SubCode = subCode,
+                    Machine = machine,
+                    Reason = reason?.Trim(),
+                    FaultMessage = message?.Trim(),
+                    Provider = provider,
+                    ProviderPath = providerPath,
+                    ProviderFault = providerFault
+                };
             }
         }
 

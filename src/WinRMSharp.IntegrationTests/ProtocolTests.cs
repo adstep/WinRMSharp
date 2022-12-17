@@ -1,27 +1,37 @@
 using System.Net;
+using WinRMSharp.IntegrationTests.Recording;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WinRMSharp.IntegrationTests
 {
     public class ProtocolTests
     {
+        private readonly RecordingManager _recordingManager;
         private readonly Protocol _protocol;
 
-        public ProtocolTests()
+        public ProtocolTests(ITestOutputHelper outputHelper)
         {
             string baseUrl = Environment.GetEnvironmentVariable("WINRM_BASE_URL") ?? throw new ArgumentNullException("WINRM_BASE_URL");
             string username = Environment.GetEnvironmentVariable("WINRM_USERNAME") ?? throw new ArgumentNullException("WINRM_USERNAME");
             string password = Environment.GetEnvironmentVariable("WINRM_PASSWORD") ?? throw new ArgumentNullException("WINRM_PASSWORD");
 
+            _recordingManager = new RecordingManager();
+            _recordingManager.Load("example");
+
             ICredentials credentials = new NetworkCredential(username, password);
-            ITransport transport = new Transport(baseUrl, credentials);
+            ITransport transport = new Transport(baseUrl, _recordingManager, credentials);
 
             ProtocolOptions protocolOptions = new ProtocolOptions()
             {
                 OperationTimeout = TimeSpan.FromSeconds(5)
             };
 
-            _protocol = new Protocol(transport, protocolOptions);
+            _protocol = new Protocol(transport, new IncrementingGuidProvider(), protocolOptions);
+            _protocol.Transport.OnMessage += (string message) =>
+            {
+                outputHelper.WriteLine(message);
+            };
         }
 
 
@@ -30,6 +40,8 @@ namespace WinRMSharp.IntegrationTests
         {
             string shellId = await _protocol.OpenShell();
             await _protocol.CloseShell(shellId);
+
+            _recordingManager.Save();
 
             Assert.Matches(@"^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$", shellId);
         }

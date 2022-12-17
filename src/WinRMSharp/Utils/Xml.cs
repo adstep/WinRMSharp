@@ -21,5 +21,18 @@ namespace WinRMSharp.Utils
         {
             return XDocument.Parse(text);
         }
+
+        public static string? Format(this string text)
+        {
+            try
+            {
+                XDocument doc = XDocument.Parse(text);
+                return doc.ToString();
+            }
+            catch (Exception)
+            {
+                return text;
+            }
+        }
     }
 }
