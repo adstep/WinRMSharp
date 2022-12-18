@@ -1,9 +1,100 @@
-﻿using Xunit;
+﻿using WinRMSharp.Exceptions;
+using WinRMSharp.Tests.Utils;
+using WinRMSharp.Utils;
+using Xunit;
 
 namespace WinRMSharp.Tests
 {
     public abstract class BaseClientTests
     {
+        [Fact]
+        public async Task ClientPutFile()
+        {
+            using TemporaryFile tempFile = new TemporaryFile("test_file.txt");
+
+            string testContent = "abcdefghijklmnopqrstuvwxyz";
+            File.WriteAllText(tempFile, testContent);
+
+            WinRMClient client = GenerateClient(nameof(ClientPutFile));
+            string source = tempFile;
+            string destination = "test_file.txt";
+
+            await client.PutFile(source, destination);
+
+            CommandState state = await client.RunCommand($"powershell.exe Get-Content {destination}");
+
+            Assert.Equal(testContent, state.Stdout.Trim());
+        }
+
+        [Fact]
+        public async Task ClientPutFileReallyLarge()
+        {
+            using TemporaryFile tempFile = new TemporaryFile("test_file_really_large.txt");
+
+            string testContent = string.Join(Environment.NewLine, Enumerable.Repeat("abcdefghijklmnopqrstuvwxyz", 20000));
+            File.WriteAllText(tempFile, testContent);
+
+            WinRMClient client = GenerateClient(nameof(ClientPutFileReallyLarge));
+            string source = tempFile;
+            string destination = "test_file_really_large.txt";
+
+            await client.PutFile(source, destination);
+
+            try
+            {
+                CommandState state = await client.RunCommand($"powershell.exe Get-Content {destination}");
+
+                Assert.Equal(testContent, state.Stdout.Trim());
+            }
+            finally
+            {
+                await client.RunCommand($"powershell Remove-Item -Path '{destination}'");
+            }
+        }
+
+        [Fact]
+        public async Task ClientFetchFile()
+        {
+            using TemporaryFile tempFile = new TemporaryFile("test_fetch_file.txt");
+
+            WinRMClient client = GenerateClient(nameof(ClientFetchFile));
+            string source = @"C:\temp\file.txt";
+            string destination = tempFile;
+
+            string content = string.Join(Environment.NewLine, new string[]
+            {
+                @"New-Item -Path C:\temp\file.txt -Type file -Force",
+                @"Set-Content -Path C:\temp\file.txt -Value (""abc`r`n"" * 50000)"
+            });
+
+            string command = Powershell.Command(content);
+            CommandState state = await client.RunCommand(command);
+
+            await client.FetchFile(source, destination);
+
+            string expectedHash = "70e3bea8cdb0d0c883bccff5228933d933b88a80";
+            string actualHash = Crypto.ComputeSecurehash(destination);
+
+            Assert.Equal(expectedHash, actualHash);
+        }
+
+        [Fact]
+        public async Task ClientFetchFileFailDir()
+        {
+            using TemporaryFile tempFile = new TemporaryFile("test_fetch_file.txt");
+
+            WinRMClient client = GenerateClient(nameof(ClientFetchFileFailDir));
+            string source = @"C:\Windows";
+            string destination = tempFile;
+
+            WinRMException ex = await Assert.ThrowsAsync<WinRMException>(async () => await client.FetchFile(source, destination));
+
+            string errorMessage = "The path at 'C:\\Windows' is a directory, source must be a file";
+
+            Assert.NotNull(ex);
+            Assert.Contains(errorMessage, ex.Message);
+        }
+
         [Fact]
         public async Task ClientRunCommand()
         {
