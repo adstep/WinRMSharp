@@ -4,8 +4,8 @@
 [![NuGet](https://img.shields.io/nuget/vpre/WinRMSharp)](https://www.nuget.org/packages/WinRMSharp)
 [![License](https://img.shields.io/github/license/adstep/WinRMSharp.svg?style=flat)](https://github.com/adstep/WinRMSharp/blob/main/LICENSE)
 
-[![Build Status](https://dev.azure.com/adstep/WinRMSharp/_apis/build/status/WinRMSharp%20CI)](https://dev.azure.com/adstep/WinRMSharp/_build/latest?definitionId=4)
-[![Coverage](https://img.shields.io/azure-devops/coverage/adstep/WinRMSharp/4)](https://dev.azure.com/adstep/WinRMSharp/_build/latest?definitionId=4)
+[![Build Status](https://dev.azure.com/adstep/OSS/_apis/build/status/WinRMSharp%20CI)](https://dev.azure.com/adstep/OSS/_build/latest?definitionId=5)
+[![Coverage](https://img.shields.io/azure-devops/coverage/adstep/OSS/5)](https://dev.azure.com/adstep/OSS/_build/latest?definitionId=5)
 
 WinRMSharp is a .NET Client for Windows Remote Management (WinRM) service. It allows you to invoke commands on target Windows machines from any machine that can run .NET.
 
@@ -94,7 +94,7 @@ To simplify the process of getting a machine ready, run [Create-VM.ps1](scripts/
 Ths script will:
 1. Locally, create a self-signed certificate
 2. Create a Azure Resource Group
-3. Create a Azure Key Vault 
+3. Create a Azure Key Vault
 4. Upload the self-signed certificate to the Key Vault
 5. Create a VM w/ WinRM over HTTPs enabled using the self-signed certificate
 6. Output the BaseUrl (```https://{ipAddress}:5986```) for the provisioned VM
