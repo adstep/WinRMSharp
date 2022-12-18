@@ -40,7 +40,7 @@ jobs:
       command: 'build' # `dotnet build` implicitly runs `dotnet restore` as well
       projects: 'src/WinRMSharp.sln'
       arguments: "--configuration ${{parameters.buildConfiguration}}"
-  
+
   - ${{ each framework in parameters.frameworks }}:
     - ${{ if not(contains(framework, 'netstandard')) }}:
       - task: DotNetCoreCLI@2
@@ -50,7 +50,7 @@ jobs:
           command: test
           publishTestResults: true
           projects:  'src/WinRMSharp.Tests'
-          arguments: '--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+          arguments: '--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --filter "Category!=Integration" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
           testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
 
   - task: ArchiveFiles@2
@@ -68,12 +68,6 @@ jobs:
       script: 'dotnet pack --configuration ${{parameters.buildConfiguration}} --output $(Build.ArtifactStagingDirectory)/pkg src/WinRMSharp/WinRMSharp.csproj'
       workingDirectory: '$(Build.SourcesDirectory)'
       failOnStderr: true
-
-  # - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool'  
-  #   displayName: 'Install ReportGenerator tool'
-
-  # - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.ArtifactStagingDirectory)/pkg/coverage-report -reporttypes:"Cobertura"'  
-  #   displayName: 'Create reports'  
 
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish code coverage report'
@@ -94,4 +88,3 @@ jobs:
     inputs:
       PublishBuildArtifacts: '$(Build.ArtifactStagingDirectory)/pkg/**'
       ArtifactName: 'deployables-${{parameters.os}}-${{parameters.architecture}}'
-  
