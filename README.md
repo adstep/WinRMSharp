@@ -1,8 +1,8 @@
 # WinRMSharp
 
-[![Github Release](https://img.shields.io/github/release/adstep/WinRMSharp.svg?style=flat)](https://github.com/adstep/WinRMSharp/releases/latest)
+[![Github Release](https://img.shields.io/github/release/adstep/WinRMSharp)](https://github.com/adstep/WinRMSharp/releases/latest)
 [![NuGet](https://img.shields.io/nuget/vpre/WinRMSharp)](https://www.nuget.org/packages/WinRMSharp)
-[![License](https://img.shields.io/github/license/adstep/WinRMSharp.svg?style=flat)](https://github.com/adstep/WinRMSharp/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/adstep/WinRMSharp)](https://github.com/adstep/WinRMSharp/blob/main/LICENSE)
 
 [![Build Status](https://dev.azure.com/adstep/OSS/_apis/build/status/WinRMSharp%20CI)](https://dev.azure.com/adstep/OSS/_build/latest?definitionId=5)
 [![Coverage](https://img.shields.io/azure-devops/coverage/adstep/OSS/5)](https://dev.azure.com/adstep/OSS/_build/latest?definitionId=5)
