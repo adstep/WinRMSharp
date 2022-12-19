@@ -1,6 +1,6 @@
-﻿namespace WinRMSharp
+﻿namespace WinRMSharp.Tests
 {
-    public class IncrementingGuidProvider : IGuidProvider
+    internal class IncrementingGuidProvider : IGuidProvider
     {
         private uint _counter = 0;
 

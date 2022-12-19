@@ -1,6 +1,6 @@
 ﻿namespace WinRMSharp
 {
-    public interface IGuidProvider
+    internal interface IGuidProvider
     {
         public Guid NewGuid();
     }
