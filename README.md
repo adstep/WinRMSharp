@@ -85,7 +85,7 @@ internal class Program
 }
 ```
 
-## Enabling WinRM on remote hsot
+## Enabling WinRM on remote host
 
 ### Setup Azure VM
 
@@ -116,7 +116,7 @@ Connect-VM -UserName user1 -Password password1 -BaseUrl https://10.10.10.10:5986
 Enable WinRM over HTTP and HTTPS with self-signed certificate (includes firewall rules):
 
 ```
-iex "& { $(irm https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1) }"
+iex "& { $(irm https://raw.githubusercontent.com/ansible/ansible-documentation/refs/heads/devel/examples/scripts/ConfigureRemotingForAnsible.ps1) }"
 ```
 
 Enable WinRM over HTTP for test usage (includes fireawll rules):
