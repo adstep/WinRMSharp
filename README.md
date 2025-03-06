@@ -85,7 +85,7 @@ internal class Program
 }
 ```
 
-## Enabling WinRM on remote hsot
+## Enabling WinRM on remote host
 
 ### Setup Azure VM
 
