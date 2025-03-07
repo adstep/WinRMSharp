@@ -219,7 +219,10 @@ namespace WinRMSharp
                         await Task.Delay(TimeSpan.FromMilliseconds(500));
                     }
                 }
-                catch (WSManFaultException ex) when (ex.Code is Fault.OPERATION_TIMEOUT)
+                catch (WSManFaultException ex)
+                    when (ex.Code is Fault.OPERATION_TIMEOUT
+                        && (stdoutBuilder.Length == 0)
+                        && (stderrBuilder.Length == 0))
                 {
                     // Expected exception when waiting for a long-running process with no output
                     // Spec says to continue to issue requests for the state immediately
