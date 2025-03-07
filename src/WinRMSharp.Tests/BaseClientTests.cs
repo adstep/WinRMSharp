@@ -19,7 +19,7 @@ namespace WinRMSharp.Tests
                 fileStream.Close();
             }
 
-            WinRMClient client = GenerateClient(nameof(ClientPutFile));
+            WinRMClient client = GenerateClient(nameof(ClientPutFile_ZeroByteFile));
             string source = tempFile;
             string destination = "test_file.txt";
 
