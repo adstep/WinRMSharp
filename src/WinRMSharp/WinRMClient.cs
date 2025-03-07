@@ -260,13 +260,21 @@ Else
             using BinaryReader binaryReader = new BinaryReader(fileStream);
 
             byte[] buffer = new byte[bufferSize];
-            int bytesRead = 0;
+            int bytesRead = binaryReader.Read(buffer, 0, buffer.Length);
 
-            while ((bytesRead = binaryReader.Read(buffer, 0, buffer.Length)) > 0)
+            if (bytesRead == 0)
+            {
+                // the file is empty
+                yield return (string.Empty, true);
+                yield break;
+            }
+
+            do
             {
                 string base64Data = Convert.ToBase64String(buffer, 0, bytesRead) + "\r\n";
                 yield return (base64Data, fileStream.Position == fileStream.Length);
             }
+            while ((bytesRead = binaryReader.Read(buffer, 0, buffer.Length)) > 0);
         }
 
         /// <summary>
