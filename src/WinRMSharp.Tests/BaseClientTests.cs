@@ -8,6 +8,31 @@ namespace WinRMSharp.Tests
     public abstract class BaseClientTests
     {
         [Fact]
+        public async Task ClientPutFile_ZeroByteFile()
+        {
+            // Arrange
+            using TemporaryFile tempFile = new TemporaryFile("test_file.txt");
+
+            // create a zero byte file
+            using (FileStream fileStream = File.Create(tempFile))
+            {
+                fileStream.Close();
+            }
+
+            WinRMClient client = GenerateClient(nameof(ClientPutFile));
+            string source = tempFile;
+            string destination = "test_file.txt";
+
+            // Act
+            await client.PutFile(source, destination);
+
+            // Assert
+            CommandState state = await client.RunCommand($"powershell.exe Get-Content {destination}");
+
+            Assert.Equal(string.Empty, state.Stdout.Trim());
+        }
+
+        [Fact]
         public async Task ClientPutFile()
         {
             using TemporaryFile tempFile = new TemporaryFile("test_file.txt");
