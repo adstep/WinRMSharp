@@ -144,23 +144,30 @@ namespace WinRMSharp.Tests
             Protocol protocol = GenerateProtocol(nameof(ProtocolRunCommandExceedingOperationTimeout));
 
             string shellId = await protocol.OpenShell();
-            string commandId = await protocol.RunCommand(shellId, $"powershell -Command Start-Sleep -s {protocol.OperationTimeout.TotalSeconds * 2}");
 
             try
             {
-                CommandState state = await protocol.PollCommandState(shellId, commandId);
+                string commandId = await protocol.RunCommand(shellId, $"powershell -Command Start-Sleep -s {protocol.OperationTimeout.TotalSeconds * 2}");
 
-                Assert.Fail("An exception is expected");
-            }
-            catch (WSManFaultException ex)
-            {
-                Assert.Equal("WSManFaultException", ex.Message);
-                Assert.NotNull(ex.InnerException);
-                Assert.StartsWith("Bad HTTP response returned from server.", ex.InnerException.Message);
+                try
+                {
+                    CommandState state = await protocol.PollCommandState(shellId, commandId);
+
+                    Assert.Fail("An exception is expected");
+                }
+                catch (WSManFaultException ex)
+                {
+                    Assert.Equal("WSManFaultException", ex.Message);
+                    Assert.NotNull(ex.InnerException);
+                    Assert.StartsWith("Bad HTTP response returned from server.", ex.InnerException.Message);
+                }
+                finally
+                {
+                    await protocol.CloseCommand(shellId, commandId);
+                }
             }
             finally
             {
-                await protocol.CloseCommand(shellId, commandId);
                 await protocol.CloseShell(shellId);
             }
         }
