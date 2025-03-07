@@ -204,28 +204,17 @@ namespace WinRMSharp
 
             while (!done)
             {
-                try
+                CommandState state = await GetCommandState(shellId, commandId);
+
+                done = state.Done;
+                statusCode = state.StatusCode;
+
+                stdoutBuilder.Append(state.Stdout);
+                stderrBuilder.Append(state.Stderr);
+
+                if (!done)
                 {
-                    CommandState state = await GetCommandState(shellId, commandId);
-
-                    done = state.Done;
-                    statusCode = state.StatusCode;
-
-                    stdoutBuilder.Append(state.Stdout);
-                    stderrBuilder.Append(state.Stderr);
-
-                    if (!done)
-                    {
-                        await Task.Delay(TimeSpan.FromMilliseconds(500));
-                    }
-                }
-                catch (WSManFaultException ex)
-                    when (ex.Code is Fault.OPERATION_TIMEOUT
-                        && (stdoutBuilder.Length == 0)
-                        && (stderrBuilder.Length == 0))
-                {
-                    // Expected exception when waiting for a long-running process with no output
-                    // Spec says to continue to issue requests for the state immediately
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
                 }
             }
 
