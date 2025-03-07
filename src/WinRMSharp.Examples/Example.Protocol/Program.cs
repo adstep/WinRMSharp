@@ -17,25 +17,33 @@ internal class Program
 
         ITransport transport = new Transport(baseUrl, credentials);
         Protocol protocol = new Protocol(transport);
+        CommandState commandState;
 
         string shellId = await protocol.OpenShell();
-        Console.WriteLine($"Opened shell '{shellId}'");
+        try
+        {
+            Console.WriteLine($"Opened shell '{shellId}'");
 
-        string commandId = await protocol.RunCommand(shellId, $"ipconfig", new string[] { "/all" });
-        Console.WriteLine($"Started command '{commandId}'");
+            string commandId = await protocol.RunCommand(shellId, $"ipconfig", new string[] { "/all" });
 
-        CommandState commandState = await protocol.PollCommandState(shellId, commandId);
+            try
+            {
+                Console.WriteLine($"Started command '{commandId}'");
+
+                commandState = await protocol.PollCommandState(shellId, commandId);
+            }
+            finally
+            {
+                await protocol.CloseCommand(shellId, commandId);
+            }
+        }
+        finally
+        {
+            await protocol.CloseShell(shellId);
+        }
 
         Console.WriteLine($"StatusCode: {commandState.StatusCode}");
         Console.WriteLine($"Stdout: \r\n{commandState.Stdout}");
         Console.WriteLine($"Stderr: \r\n{commandState.Stderr}");
-
-        await protocol.CloseCommand(shellId, commandId);
-        try
-        {
-            await protocol.CloseCommand("11111111-1111-1111-1111-111111111111", commandId);
-        }
-        catch { }
-        await protocol.CloseShell(shellId);
     }
 }

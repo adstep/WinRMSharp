@@ -57,31 +57,26 @@ namespace WinRMSharp
 
             //OnMessage?.Invoke($"Sending message: '{message}'");
 
-            using HttpResponseMessage response = await _httpClient.PostAsync("wsman", data).ConfigureAwait(false);
+            using HttpResponseMessage response = await _httpClient.PostAsync("wsman", data);
 
             //OnMessage?.Invoke($"Receiving message: '{await response.Content.ReadAsStringAsync()}'");
+
+            string content = await response.Content.ReadAsStringAsync();
+            int statusCode = (int)response.StatusCode;
 
             try
             {
                 response.EnsureSuccessStatusCode();
 
-                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return content;
             }
-            catch (HttpRequestException ex) when (response?.StatusCode == HttpStatusCode.Unauthorized)
+            catch (HttpRequestException ex)
+                when (response?.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new InvalidCredentialException("The specified credentials were rejected by the server", ex);
             }
             catch (HttpRequestException ex)
             {
-                string content = string.Empty;
-                int statusCode = 500;
-
-                if (response != null)
-                {
-                    content = await response.Content.ReadAsStringAsync();
-                    statusCode = (int)response.StatusCode;
-                }
-
                 throw new TransportException(statusCode, content, ex);
             }
         }

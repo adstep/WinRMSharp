@@ -119,7 +119,7 @@ Enable WinRM over HTTP and HTTPS with self-signed certificate (includes firewall
 iex "& { $(irm https://raw.githubusercontent.com/ansible/ansible-documentation/refs/heads/devel/examples/scripts/ConfigureRemotingForAnsible.ps1) }"
 ```
 
-Enable WinRM over HTTP for test usage (includes fireawll rules):
+Enable WinRM over HTTP for test usage (includes firewall rules):
 
 ```
 winrm quickconfig

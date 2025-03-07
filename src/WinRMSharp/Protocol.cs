@@ -115,7 +115,7 @@ namespace WinRMSharp
                 );
             }
 
-            XDocument root = await Send(envelope).ConfigureAwait(false);
+            XDocument root = await Send(envelope);
 
             string? shellId = root.Descendants().FirstOrDefault(e => e.Attribute("Name")?.Value == "ShellId")?.Value;
 
@@ -159,12 +159,8 @@ namespace WinRMSharp
 
             XDocument root = await Send(envelope);
 
-            string? commandId = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("CommandId") ?? false)?.Value;
-
-            if (commandId == null)
-            {
-                throw new WinRMException("Failed to extract commandId");
-            }
+            string? commandId = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("CommandId") ?? false)?.Value
+                ?? throw new WinRMException("Failed to extract commandId");
 
             return commandId;
         }
@@ -204,25 +200,17 @@ namespace WinRMSharp
 
             while (!done)
             {
-                try
+                CommandState state = await GetCommandState(shellId, commandId);
+
+                done = state.Done;
+                statusCode = state.StatusCode;
+
+                stdoutBuilder.Append(state.Stdout);
+                stderrBuilder.Append(state.Stderr);
+
+                if (!done)
                 {
-                    CommandState state = await GetCommandState(shellId, commandId);
-
-                    done = state.Done;
-                    statusCode = state.StatusCode;
-
-                    stdoutBuilder.Append(state.Stdout);
-                    stderrBuilder.Append(state.Stderr);
-
-                    if (!done)
-                    {
-                        await Task.Delay(TimeSpan.FromMilliseconds(500));
-                    }
-                }
-                catch (WSManFaultException ex) when (ex.Code is Fault.OPERATION_TIMEOUT)
-                {
-                    // Expected exception when waiting for a long-running process with no output
-                    // Spec says to continue to issue requests for the state immediately
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
                 }
             }
 
@@ -311,7 +299,8 @@ namespace WinRMSharp
                     throw new WinRMException("Close response id failed to match request");
                 }
             }
-            catch (WSManFaultException ex) when (ex.Code is Fault.SHELL_NOT_FOUND or Fault.ERROR_OPERATION_ABORTED)
+            catch (WSManFaultException ex)
+                when (ex.Code is Fault.SHELL_NOT_FOUND or Fault.ERROR_OPERATION_ABORTED)
             {
                 // Ignore
             }
@@ -347,12 +336,14 @@ namespace WinRMSharp
                     throw new WinRMException("Close response id failed to match request");
                 }
             }
-            catch (WSManFaultException fault) when (fault.Code == Fault.SHELL_NOT_FOUND || fault.Code == Fault.ERROR_OPERATION_ABORTED)
+            catch (WSManFaultException fault)
+                when (fault.Code == Fault.SHELL_NOT_FOUND || fault.Code == Fault.ERROR_OPERATION_ABORTED)
             {
                 // Ignore
                 // Dont let the cleanup raise so we dont lose any errors from the command
             }
-            catch (TransportException ex) when (ex.Code == (int)HttpStatusCode.InternalServerError)
+            catch (TransportException ex)
+                when (ex.Code == (int)HttpStatusCode.InternalServerError)
             {
                 // Ignore
                 // Dont let the cleanup raise so we dont lose any errors from the command
@@ -372,7 +363,7 @@ namespace WinRMSharp
                 if (string.IsNullOrEmpty(ex.Content))
                 {
                     // Assume some other transport error and raise the original exception
-                    throw ex;
+                    throw;
                 }
 
                 XDocument root;

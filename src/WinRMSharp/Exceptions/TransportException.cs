@@ -16,7 +16,7 @@
         public string? Content { get; set; }
 
         public TransportException(int code, string content, Exception inner)
-            : base($"Bad HTTP response returend from server. Code: {code} Content: {content}", inner)
+            : base($"Bad HTTP response returned from server. Code: {code} Content: {content}", inner)
         {
             Code = code;
             Content = content;

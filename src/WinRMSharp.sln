@@ -11,6 +11,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Client", "WinRMShar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Protocol", "WinRMSharp.Examples\Example.Protocol\Example.Protocol.csproj", "{6984791A-5357-434D-9E55-3CE5E68E5771}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D1B7283E-5E9D-42DF-866D-544762F3C9D6}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
+		..\Directory.Build.props = ..\Directory.Build.props
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+		..\version.json = ..\version.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".pipelines", ".pipelines", "{2012CFEF-7554-42CF-9313-B284BA4B01EE}"
+	ProjectSection(SolutionItems) = preProject
+		..\.pipelines\azure-pipelines-ci.yml = ..\.pipelines\azure-pipelines-ci.yml
+		..\.pipelines\azure-pipelines-pr.yml = ..\.pipelines\azure-pipelines-pr.yml
+		..\.pipelines\azure-pipelines-template.yml = ..\.pipelines\azure-pipelines-template.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +53,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2012CFEF-7554-42CF-9313-B284BA4B01EE} = {D1B7283E-5E9D-42DF-866D-544762F3C9D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {965AB50D-D82F-4EF8-963C-07086194E5C4}

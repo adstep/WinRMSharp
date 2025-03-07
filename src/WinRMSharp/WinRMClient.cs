@@ -110,18 +110,34 @@ end {{
 """;
             string script = string.Format(scriptTemplate, destination);
             string command = Powershell.Command(script);
+            CommandState state;
 
             string shellId = await Protocol.OpenShell();
-            string commandId = await Protocol.RunCommand(shellId, command);
 
-            IEnumerable<(string, bool)> iterator = FileIterator(source);
-
-            foreach ((string data, bool isLast) in iterator)
+            try
             {
-                await Protocol.SendCommandInput(shellId, commandId, data, isLast);
-            }
+                string commandId = await Protocol.RunCommand(shellId, command);
 
-            CommandState state = await Protocol.PollCommandState(shellId, commandId);
+                try
+                {
+                    IEnumerable<(string, bool)> iterator = FileIterator(source);
+
+                    foreach ((string data, bool isLast) in iterator)
+                    {
+                        await Protocol.SendCommandInput(shellId, commandId, data, isLast);
+                    }
+
+                    state = await Protocol.PollCommandState(shellId, commandId);
+                }
+                finally
+                {
+                    await Protocol.CloseCommand(shellId, commandId);
+                }
+            }
+            finally
+            {
+                await Protocol.CloseShell(shellId);
+            }
 
             if (state.StatusCode != 0)
             {
@@ -187,11 +203,26 @@ Else
             {
                 string script = string.Format(scriptTemplate, source, bufferSize, offset);
                 string command = Powershell.Command(script);
+                CommandState state;
 
                 string shellId = await Protocol.OpenShell();
-                string commandId = await Protocol.RunCommand(shellId, command);
+                try
+                {
+                    string commandId = await Protocol.RunCommand(shellId, command);
 
-                CommandState state = await Protocol.PollCommandState(shellId, commandId);
+                    try
+                    {
+                        state = await Protocol.PollCommandState(shellId, commandId);
+                    }
+                    finally
+                    {
+                        await Protocol.CloseCommand(shellId, commandId);
+                    }
+                }
+                finally
+                {
+                    await Protocol.CloseShell(shellId);
+                }
 
                 if (state.StatusCode != 0)
                 {
@@ -229,13 +260,21 @@ Else
             using BinaryReader binaryReader = new BinaryReader(fileStream);
 
             byte[] buffer = new byte[bufferSize];
-            int bytesRead = 0;
+            int bytesRead = binaryReader.Read(buffer, 0, buffer.Length);
 
-            while ((bytesRead = binaryReader.Read(buffer, 0, buffer.Length)) > 0)
+            if (bytesRead == 0)
+            {
+                // the file is empty
+                yield return (string.Empty, true);
+                yield break;
+            }
+
+            do
             {
                 string base64Data = Convert.ToBase64String(buffer, 0, bytesRead) + "\r\n";
                 yield return (base64Data, fileStream.Position == fileStream.Length);
             }
+            while ((bytesRead = binaryReader.Read(buffer, 0, buffer.Length)) > 0);
         }
 
         /// <summary>
@@ -252,12 +291,25 @@ Else
         public async Task<CommandState> RunCommand(string command, string[]? args = null, string? workingDirectory = null, Dictionary<string, string>? environment = null, TimeSpan? idleTimeout = null, int? codePage = null, bool? noProfile = null)
         {
             string shellId = await Protocol.OpenShell(workingDirectory: workingDirectory, environment: environment, idleTimeout: idleTimeout, codePage: codePage, noProfile: noProfile);
-            string commandId = await Protocol.RunCommand(shellId, command, args);
+            CommandState state;
 
-            CommandState state = await Protocol.PollCommandState(shellId, commandId);
+            try
+            {
+                string commandId = await Protocol.RunCommand(shellId, command, args);
 
-            await Protocol.CloseCommand(shellId, commandId);
-            await Protocol.CloseShell(shellId);
+                try
+                {
+                    state = await Protocol.PollCommandState(shellId, commandId);
+                }
+                finally
+                {
+                    await Protocol.CloseCommand(shellId, commandId);
+                }
+            }
+            finally
+            {
+                await Protocol.CloseShell(shellId);
+            }
 
             return state;
         }
