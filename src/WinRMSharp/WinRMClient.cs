@@ -44,6 +44,17 @@ namespace WinRMSharp
         /// <param name="credentials">Credentials to use for communication with the remote machine.</param>
         /// <param name="options">Options to configure instance.</param>
         public WinRMClient(string baseUrl, ICredentials credentials, WinRMClientOptions? options = null)
+            : this(new Uri(baseUrl), credentials, options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WinRMClient"/> class.
+        /// </summary>
+        /// <param name="baseUrl">BaseUrl remote machine.</param>
+        /// <param name="credentials">Credentials to use for communication with the remote machine.</param>
+        /// <param name="options">Options to configure instance.</param>
+        public WinRMClient(Uri baseUrl, ICredentials credentials, WinRMClientOptions? options = null)
         {
             TransportOptions transportOptions = new TransportOptions()
             {

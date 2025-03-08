@@ -22,13 +22,16 @@
             }
         }
 
-        public SessionHandler GenerateSessionHandler(SessionState state, string sessionName)
+        public SessionHandler GenerateSessionHandler(
+            SessionState state,
+            string sessionName,
+            Dictionary<string, string>? replacements = null)
         {
             SessionHandler? handler;
 
             if (state == SessionState.Recording)
             {
-                handler = RecordingHandler.Create(sessionName);
+                handler = RecordingHandler.Create(sessionName, replacements);
             }
             else if (state == SessionState.Playback)
             {

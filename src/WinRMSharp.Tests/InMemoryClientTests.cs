@@ -42,11 +42,21 @@ namespace WinRMSharp.Tests
 
         public override WinRMClient GenerateClient(string sessionName)
         {
-            string baseUrl = "https://127.0.0.1/wsman";
+            Uri baseUrl = new Uri("https://127.0.0.1:5986/wsman");
             string userName = "exampleUser";
             string password = "examplePassword";
 
-            DelegatingHandler handler = _sessionManager.GenerateSessionHandler(SessionState.Playback, sessionName);
+            Dictionary<string, string> replacements = new Dictionary<string, string>
+            {
+                { baseUrl.ToString(), "https://127.0.0.1:5986/wsman" },
+                { baseUrl.Host, "127.0.0.1" },
+                { userName, "exampleUser" },
+            };
+
+            DelegatingHandler handler = _sessionManager.GenerateSessionHandler(
+                SessionState.Playback,
+                sessionName,
+                replacements);
 
             ICredentials credentials = new NetworkCredential(userName, password);
             ITransport transport = new Transport(baseUrl, handler, credentials);
