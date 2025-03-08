@@ -5,21 +5,25 @@ namespace WinRMSharp.Tests.Sessions
     internal class RecordingHandler : SessionHandler
     {
         private readonly string _sessionName;
+        private readonly Dictionary<string, string>? _replacements;
         private readonly List<Recording> _recordings = new List<Recording>();
 
-        private RecordingHandler(string sessionName)
+        private RecordingHandler(string sessionName, Dictionary<string, string>? replacements)
         {
             _sessionName = sessionName;
+            _replacements = replacements;
         }
 
-        public static RecordingHandler Create(string sessionName)
+        public static RecordingHandler Create(string sessionName, Dictionary<string, string>? replacements)
         {
-            return new RecordingHandler(sessionName);
+            return new RecordingHandler(sessionName, replacements);
         }
 
         public void Save()
         {
-            ISerializer serializer = new SerializerBuilder().Build();
+            ISerializer serializer = new SerializerBuilder()
+                .WithTypeConverter(new SecretsMaskingConverter(_replacements))
+                .Build();
             string yaml = serializer.Serialize(_recordings);
             string path = Path.Join("Data", "Sessions", $"{_sessionName}.yml");
 

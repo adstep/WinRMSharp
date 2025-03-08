@@ -32,20 +32,41 @@ namespace WinRMSharp
         /// <param name="credentials">Credentials used to secure communication to the destination host.</param>
         /// <param name="options">Transport options.</param>
         public Transport(string baseUrl, ICredentials credentials, TransportOptions? options = null)
+            : this(new Uri(baseUrl), credentials, options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Transport"/> class.
+        /// </summary>
+        /// <param name="baseUrl">Base url of the destination host.</param>
+        /// <param name="credentials">Credentials used to secure communication to the destination host.</param>
+        /// <param name="options">Transport options.</param>
+        public Transport(Uri baseUrl, ICredentials credentials, TransportOptions? options = null)
             : this(baseUrl, GenerateSecureHandler(credentials), options)
         {
         }
 
         internal Transport(string baseUrl, DelegatingHandler wrapper, ICredentials credentials, TransportOptions? options = null)
+            : this(new Uri(baseUrl), wrapper, credentials, options)
+        {
+        }
+
+        internal Transport(Uri baseUrl, DelegatingHandler wrapper, ICredentials credentials, TransportOptions? options = null)
             : this(baseUrl, GenerateWrappedHandler(wrapper, GenerateSecureHandler(credentials)), options)
         {
         }
 
-        internal Transport(string baseUrl, HttpMessageHandler messageHandler, TransportOptions? options = null)
+        internal Transport(string baseUrl, HttpMessageHandler messageHandler)
+            : this(new Uri(baseUrl), messageHandler)
+        {
+        }
+
+        internal Transport(Uri baseUrl, HttpMessageHandler messageHandler, TransportOptions? options = null)
         {
             _httpClient = new HttpClient(messageHandler)
             {
-                BaseAddress = new Uri(baseUrl),
+                BaseAddress = baseUrl,
                 Timeout = options?.ReadTimeout ?? DefaultReadTimeout
             };
         }
