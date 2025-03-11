@@ -38,7 +38,7 @@
         /// Run a command in an opened shell on the destination host.
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
-        /// <param name="command">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
+        /// <param name="command">The command to run on the remote machine. See <see cref="RunCommand"/>.</param>
         /// <param name="args">Array of arguments for the command.</param>
         /// <returns>Identifier for the executing command.</returns>
         Task<string> RunCommand(string shellId, string command, string[]? args = null);
@@ -47,7 +47,7 @@
         /// Send input to a command executing in a shell.
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
-        /// <param name="command">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
+        /// <param name="commandId">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
         /// <param name="input">Input text to send.</param>
         /// <param name="end">Boolean flag to indicate to close the stdin stream.</param>
         Task SendCommandInput(string shellId, string commandId, string input, bool end = false);
@@ -56,14 +56,14 @@
         /// 
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
-        /// <param name="command">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
+        /// <param name="commandId">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
         Task<CommandState> PollCommandState(string shellId, string commandId);
 
         /// <summary>
         /// Gets the latest state of a command executing in a shell.
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
-        /// <param name="command">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
+        /// <param name="commandId">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
         /// <returns>State of a executing command.</returns>
         Task<CommandState> GetCommandState(string shellId, string commandId);
 
@@ -71,7 +71,7 @@
         /// Cleans up an executed command on the destination host.
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
-        /// <param name="command">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
+        /// <param name="commandId">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
         Task CloseCommand(string shellId, string commandId);
 
         /// <summary>
