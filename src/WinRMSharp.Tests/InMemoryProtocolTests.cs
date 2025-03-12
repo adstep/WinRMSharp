@@ -9,22 +9,24 @@ namespace WinRMSharp.Tests
     {
         private readonly SessionManager _sessionManager = new SessionManager();
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             _sessionManager.Dispose();
         }
 
+        /// <inheritdoc/>
         public override Protocol GenerateProtocol(string sessionName)
         {
             Uri baseUrl = new Uri("https://127.0.0.1:5986/wsman");
             string userName = "exampleUser";
             string password = "examplePassword";
 
-            Dictionary<string, string> replacements = new Dictionary<string, string>
+            Tuple<string, string, bool>[] replacements = new Tuple<string, string, bool>[]
             {
-                { baseUrl.ToString(), "https://127.0.0.1:5986/wsman" },
-                { baseUrl.Host, "127.0.0.1" },
-                { userName, "exampleUser" },
+                Tuple.Create(baseUrl.ToString(), "https://127.0.0.1:5986/wsman", false),
+                Tuple.Create(baseUrl.Host, "127.0.0.1", false),
+                Tuple.Create(userName, "exampleUser", false),
             };
 
             DelegatingHandler handler = _sessionManager.GenerateSessionHandler(

@@ -5,16 +5,16 @@ namespace WinRMSharp.Tests.Sessions
     internal class RecordingHandler : SessionHandler
     {
         private readonly string _sessionName;
-        private readonly Dictionary<string, string>? _replacements;
+        private readonly Tuple<string, string, bool>[]? _replacements;
         private readonly List<Recording> _recordings = new List<Recording>();
 
-        private RecordingHandler(string sessionName, Dictionary<string, string>? replacements)
+        private RecordingHandler(string sessionName, Tuple<string, string, bool>[]? replacements)
         {
             _sessionName = sessionName;
             _replacements = replacements;
         }
 
-        public static RecordingHandler Create(string sessionName, Dictionary<string, string>? replacements)
+        public static RecordingHandler Create(string sessionName, Tuple<string, string, bool>[]? replacements)
         {
             return new RecordingHandler(sessionName, replacements);
         }

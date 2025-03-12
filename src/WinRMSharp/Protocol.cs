@@ -128,11 +128,15 @@ namespace WinRMSharp
         }
 
         /// <inheritdoc cref="IProtocol.RunCommand" />
-        public async Task<string> RunCommand(string shellId, string command, string[]? args = null)
+        public async Task<string> RunCommand(
+            string shellId,
+            string command,
+            string[]? args = null,
+            TimeSpan? timeout = null)
         {
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(RESOURCE_URI, WSManAction.Command, shellId),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Command, shellId, timeout),
                 Body = new Body()
                 {
                     CommandLine = new CommandLine()
@@ -157,7 +161,7 @@ namespace WinRMSharp
                 }
             };
 
-            XDocument root = await Send(envelope);
+            XDocument root = await Send(envelope, timeout);
 
             string? commandId = root.Descendants().FirstOrDefault(e => e?.Name.ToString().EndsWith("CommandId") ?? false)?.Value
                 ?? throw new WinRMException("Failed to extract commandId");
@@ -190,7 +194,10 @@ namespace WinRMSharp
         }
 
         /// <inheritdoc cref="IProtocol.PollCommandState" />
-        public async Task<CommandState> PollCommandState(string shellId, string commandId)
+        public async Task<CommandState> PollCommandState(
+            string shellId,
+            string commandId,
+            TimeSpan? timeout = null)
         {
             StringBuilder stdoutBuilder = new StringBuilder();
             StringBuilder stderrBuilder = new StringBuilder();
@@ -200,7 +207,7 @@ namespace WinRMSharp
 
             while (!done)
             {
-                CommandState state = await GetCommandState(shellId, commandId);
+                CommandState state = await GetCommandState(shellId, commandId, timeout);
 
                 done = state.Done;
                 statusCode = state.StatusCode;
@@ -224,11 +231,14 @@ namespace WinRMSharp
         }
 
         /// <inheritdoc cref="IProtocol.GetCommandState" />
-        public async Task<CommandState> GetCommandState(string shellId, string commandId)
+        public async Task<CommandState> GetCommandState(
+            string shellId,
+            string commandId,
+            TimeSpan? timeout = null)
         {
             Envelope envelope = new Envelope()
             {
-                Header = GetHeader(RESOURCE_URI, WSManAction.Receive, shellId),
+                Header = GetHeader(RESOURCE_URI, WSManAction.Receive, shellId, timeout),
                 Body = new Body()
                 {
                     Receive = new Receive()
@@ -242,7 +252,7 @@ namespace WinRMSharp
                 }
             };
 
-            XDocument root = await Send(envelope);
+            XDocument root = await Send(envelope, timeout);
 
             StringBuilder stdout = new StringBuilder();
             StringBuilder stderr = new StringBuilder();
@@ -350,11 +360,11 @@ namespace WinRMSharp
             }
         }
 
-        private async Task<XDocument> Send(Envelope envelope)
+        private async Task<XDocument> Send(Envelope envelope, TimeSpan? timeout = null)
         {
             try
             {
-                string response = await Transport.Send(Xml.Serialize(envelope));
+                string response = await Transport.Send(Xml.Serialize(envelope), timeout);
 
                 return Xml.Parse(response);
             }
@@ -432,7 +442,11 @@ namespace WinRMSharp
             }
         }
 
-        private Header GetHeader(string resourceUri, string action, string? shellId = null)
+        private Header GetHeader(
+            string resourceUri,
+            string action,
+            string? shellId = null,
+            TimeSpan? operationTimeout = null)
         {
             string messageId = _guidProvider.NewGuid().ToString();
 
@@ -463,7 +477,7 @@ namespace WinRMSharp
                     MustUnderstand = false,
                     Language = DefaultLocale
                 },
-                OperationTimeout = $"PT{OperationTimeout.TotalSeconds}S",
+                OperationTimeout = $"PT{operationTimeout?.TotalSeconds ?? OperationTimeout.TotalSeconds}S",
                 ResourceURI = new ResourceURI()
                 {
                     MustUnderstand = true,
