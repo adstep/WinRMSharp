@@ -25,7 +25,7 @@
         public SessionHandler GenerateSessionHandler(
             SessionState state,
             string sessionName,
-            Dictionary<string, string>? replacements = null)
+            Tuple<string, string, bool>[]? replacements = null)
         {
             SessionHandler? handler;
 

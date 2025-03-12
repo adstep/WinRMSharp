@@ -19,11 +19,12 @@ namespace WinRMSharp
     public class Transport : ITransport
     {
         private static readonly TimeSpan DefaultReadTimeout = TimeSpan.FromSeconds(30);
+        private readonly Uri _baseUrl;
+        private readonly HttpMessageHandler _messageHandler;
+        private readonly TransportOptions? _options;
 
-        private readonly HttpClient _httpClient;
-
-        /// <inheritdoc cref="ITransport.Transport" />
-        public TimeSpan ReadTimeout => _httpClient.Timeout;
+        /// <inheritdoc cref="ITransport.ReadTimeout" />
+        public TimeSpan ReadTimeout => _options?.ReadTimeout ?? DefaultReadTimeout;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Transport"/> class.
@@ -64,21 +65,25 @@ namespace WinRMSharp
 
         internal Transport(Uri baseUrl, HttpMessageHandler messageHandler, TransportOptions? options = null)
         {
-            _httpClient = new HttpClient(messageHandler)
-            {
-                BaseAddress = baseUrl,
-                Timeout = options?.ReadTimeout ?? DefaultReadTimeout
-            };
+            _baseUrl = baseUrl;
+            _messageHandler = messageHandler;
+            _options = options;
         }
 
         /// <inheritdoc cref="ITransport.Send" />
-        public async Task<string> Send(string message)
+        public async Task<string> Send(string message, TimeSpan? timeout = null)
         {
             StringContent data = new StringContent(message, Encoding.UTF8, "application/soap+xml");
 
             //OnMessage?.Invoke($"Sending message: '{message}'");
 
-            using HttpResponseMessage response = await _httpClient.PostAsync("wsman", data);
+            HttpClient httpClient = new HttpClient(_messageHandler)
+            {
+                BaseAddress = _baseUrl,
+                Timeout = timeout ?? ReadTimeout,
+            };
+
+            using HttpResponseMessage response = await httpClient.PostAsync("wsman", data);
 
             //OnMessage?.Invoke($"Receiving message: '{await response.Content.ReadAsStringAsync()}'");
 

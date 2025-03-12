@@ -298,19 +298,28 @@ Else
         /// <param name="idleTimeout">Time length before shell is closed.</param>
         /// <param name="codePage">Encoding of the output std buffers. Correlates to the codepage of the host. en-US traditionally maps to 437.</param>
         /// <param name="noProfile">Whether to create the shell with the user profile active or not.</param>
+        /// <param name="commandTimeout">The maximum allowed time for the command.</param>
         /// <returns></returns>
-        public async Task<CommandState> RunCommand(string command, string[]? args = null, string? workingDirectory = null, Dictionary<string, string>? environment = null, TimeSpan? idleTimeout = null, int? codePage = null, bool? noProfile = null)
+        public async Task<CommandState> RunCommand(
+            string command,
+            string[]? args = null,
+            string? workingDirectory = null,
+            Dictionary<string, string>? environment = null,
+            TimeSpan? idleTimeout = null,
+            int? codePage = null,
+            bool? noProfile = null,
+            TimeSpan? commandTimeout = null)
         {
             string shellId = await Protocol.OpenShell(workingDirectory: workingDirectory, environment: environment, idleTimeout: idleTimeout, codePage: codePage, noProfile: noProfile);
             CommandState state;
 
             try
             {
-                string commandId = await Protocol.RunCommand(shellId, command, args);
+                string commandId = await Protocol.RunCommand(shellId, command, args, commandTimeout);
 
                 try
                 {
-                    state = await Protocol.PollCommandState(shellId, commandId);
+                    state = await Protocol.PollCommandState(shellId, commandId, commandTimeout);
                 }
                 finally
                 {

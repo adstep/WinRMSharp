@@ -40,8 +40,13 @@
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
         /// <param name="command">The command to run on the remote machine. See <see cref="RunCommand"/>.</param>
         /// <param name="args">Array of arguments for the command.</param>
+        /// <param name="timeout">The maximum allowed time for the command.</param>
         /// <returns>Identifier for the executing command.</returns>
-        Task<string> RunCommand(string shellId, string command, string[]? args = null);
+        Task<string> RunCommand(
+            string shellId,
+            string command,
+            string[]? args = null,
+            TimeSpan? timeout = null);
 
         /// <summary>
         /// Send input to a command executing in a shell.
@@ -57,15 +62,23 @@
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
         /// <param name="commandId">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
-        Task<CommandState> PollCommandState(string shellId, string commandId);
+        /// <param name="timeout">The maximum allowed time to poll for the command state.</param>
+        Task<CommandState> PollCommandState(
+            string shellId,
+            string commandId,
+            TimeSpan? timeout = null);
 
         /// <summary>
         /// Gets the latest state of a command executing in a shell.
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
         /// <param name="commandId">The command id on the remote machine. See <see cref="RunCommand"/>.</param>
+        /// <param name="timeout">The maximum allowed time to get the command state.</param>
         /// <returns>State of a executing command.</returns>
-        Task<CommandState> GetCommandState(string shellId, string commandId);
+        Task<CommandState> GetCommandState(
+            string shellId,
+            string commandId,
+            TimeSpan? timeout = null);
 
         /// <summary>
         /// Cleans up an executed command on the destination host.
