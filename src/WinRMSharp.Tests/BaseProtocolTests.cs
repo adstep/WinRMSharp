@@ -172,6 +172,47 @@ namespace WinRMSharp.Tests
             }
         }
 
+        /// <summary>
+        /// Asserts that calling <see cref="Protocol.RunCommand" /> obeys the specified command timeout.
+        /// </summary>
+        [Fact]
+        public async Task ProtocolRunCommandWithCommandTimeout()
+        {
+            // Arrange
+            Protocol protocol = GenerateProtocol(nameof(ProtocolRunCommandWithCommandTimeout));
+
+            string shellId = await protocol.OpenShell();
+
+            TimeSpan commandTimeout = TimeSpan.FromSeconds(protocol.OperationTimeout.TotalSeconds * 3);
+
+            try
+            {
+                // Act
+                string commandId = await protocol.RunCommand(
+                    shellId,
+                    $"powershell -Command Start-Sleep -s {protocol.OperationTimeout.TotalSeconds * 2}",
+                    timeout: commandTimeout);
+
+                try
+                {
+                    // Assert
+                    CommandState state = await protocol.PollCommandState(shellId, commandId, commandTimeout);
+
+                    Assert.Equal(0, state.StatusCode);
+                    Assert.Equal("", state.Stdout);
+                    Assert.Empty(state.Stderr);
+                }
+                finally
+                {
+                    await protocol.CloseCommand(shellId, commandId);
+                }
+            }
+            finally
+            {
+                await protocol.CloseShell(shellId);
+            }
+        }
+
         [Fact]
         public async Task ProtocolRunCommandWithCommandInput()
         {
