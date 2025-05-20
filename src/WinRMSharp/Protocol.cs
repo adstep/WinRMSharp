@@ -72,6 +72,33 @@ namespace WinRMSharp
             MaxEnvelopeSize = options?.MaxEnvelopeSize ?? DefaultMaxEnvelopeSize;
         }
 
+        /// <inheritdoc cref="IProtocol.Identify" />
+        public async Task<IdentifyResponse> Identify()
+        {
+            Envelope envelope = new Envelope
+            {
+                Header = new Header(),
+                Body = new Body
+                {
+                    Identify = new Identify()
+                }
+            };
+
+            XDocument root = await Send(envelope);
+
+            XNamespace ns = XNamespace.Get("http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd");
+
+            return new IdentifyResponse
+            {
+                ProtocolVersion = root.Descendants(ns + "ProtocolVersion").SingleOrDefault()?.Value
+                    ?? throw new WinRMException("Failed to extract ProtocolVersion"),
+                ProductVendor = root.Descendants(ns + "ProductVendor").SingleOrDefault()?.Value
+                    ?? throw new WinRMException("Failed to extract ProductVendor"),
+                ProductVersion = root.Descendants(ns + "ProductVersion").SingleOrDefault()?.Value
+                    ?? throw new WinRMException("Failed to extract ProductVersion")
+            };
+        }
+
         /// <inheritdoc cref="IProtocol.OpenShell" />
         public async Task<string> OpenShell(string inputStream = "stdin", string outputStream = "stdout stderr", string? workingDirectory = null, Dictionary<string, string>? envVars = null, TimeSpan? idleTimeout = null, int? codePage = null, bool? noProfile = null)
         {
@@ -364,7 +391,9 @@ namespace WinRMSharp
         {
             try
             {
-                string response = await Transport.Send(Xml.Serialize(envelope), timeout);
+                string message = Xml.Serialize(envelope);
+
+                string response = await Transport.Send(message, timeout);
 
                 return Xml.Parse(response);
             }

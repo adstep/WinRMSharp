@@ -6,31 +6,31 @@ namespace WinRMSharp.Contracts
     public class Header
     {
         [XmlElement(Namespace = Namespace.ADDRESSING)]
-        public required string To { get; set; }
+        public string? To { get; set; }
 
         [XmlElement(Namespace = Namespace.ADDRESSING)]
-        public required ReplyTo ReplyTo { get; set; }
+        public ReplyTo? ReplyTo { get; set; }
 
         [XmlElement(Namespace = Namespace.WSMAN_0)]
-        public required MaxEnvelopeSize MaxEnvelopeSize { get; set; }
+        public MaxEnvelopeSize? MaxEnvelopeSize { get; set; }
 
         [XmlElement(Namespace = Namespace.ADDRESSING)]
-        public required string MessageID { get; set; }
+        public string? MessageID { get; set; }
 
         [XmlElement(Namespace = Namespace.WSMAN_0)]
-        public required Locale Locale { get; set; }
+        public Locale? Locale { get; set; }
 
         [XmlElement(Namespace = Namespace.WSMAN_1)]
-        public required Locale DataLocale { get; set; }
+        public Locale? DataLocale { get; set; }
 
         [XmlElement(Namespace = Namespace.WSMAN_0)]
-        public required string OperationTimeout { get; set; }
+        public string? OperationTimeout { get; set; }
 
         [XmlElement(Namespace = Namespace.WSMAN_0)]
-        public required ResourceURI ResourceURI { get; set; }
+        public ResourceURI? ResourceURI { get; set; }
 
         [XmlElement(Namespace = Namespace.ADDRESSING)]
-        public required Action Action { get; set; }
+        public Action? Action { get; set; }
 
         [XmlArray(Namespace = Namespace.WSMAN_0)]
         public List<Option>? OptionSet { get; set; }

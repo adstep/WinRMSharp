@@ -20,6 +20,9 @@ namespace WinRMSharp.Contracts
 
         [XmlElement(Namespace = Namespace.WSMAN_SHELL)]
         public Signal? Signal { get; set; }
+
+        [XmlElement(Namespace = Namespace.WSMID)]
+        public Identify? Identify { get; set; }
     }
 
     /// <summary>

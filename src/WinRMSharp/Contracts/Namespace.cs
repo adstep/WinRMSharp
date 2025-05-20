@@ -10,6 +10,7 @@
         public const string CIM_BINDING = "http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd";
         public const string ENUMERATION = "http://schemas.xmlsoap.org/ws/2004/09/enumeration";
         public const string TRANSFER = "http://schemas.xmlsoap.org/ws/2004/09/transfer";
+        public const string WSMID = "http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd";
         public const string WSMAN_0 = "http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd";
         public const string WSMAN_1 = "http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd";
         public const string WSMAN_SHELL = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell";

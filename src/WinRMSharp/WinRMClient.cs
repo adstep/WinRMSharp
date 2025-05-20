@@ -77,6 +77,15 @@ namespace WinRMSharp
         }
 
         /// <summary>
+        /// Retrieves identification information from the remote machine.
+        /// </summary>
+        /// <returns>
+        /// The identification information.
+        /// </returns>
+        public async Task<IdentifyResponse> Identify()
+            => await Protocol.Identify();
+
+        /// <summary>
         /// Copies a single file from the current machine to the remote machine.
         /// </summary>
         /// <param name="source">Path to a file on the local machine.</param>

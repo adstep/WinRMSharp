@@ -8,6 +8,18 @@ namespace WinRMSharp.Tests
     public abstract class BaseClientTests
     {
         [Fact]
+        public async Task ClientIdentify()
+        {
+            WinRMClient client = GenerateClient(nameof(ClientIdentify));
+
+            IdentifyResponse identifyResponse = await client.Identify();
+
+            Assert.Matches(@"Microsoft Corporation", identifyResponse.ProductVendor);
+            Assert.Matches(@"^OS:\s\d+\.\d+\.\d+\sSP:\s\d+\.\d+\sStack:\s\d+\.\d+$", identifyResponse.ProductVersion);
+            Assert.Matches(@"http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd", identifyResponse.ProtocolVersion);
+        }
+
+        [Fact]
         public async Task ClientPutFile_ZeroByteFile()
         {
             // Arrange

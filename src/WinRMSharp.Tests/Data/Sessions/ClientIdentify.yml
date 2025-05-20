@@ -1,0 +1,33 @@
+- Request:
+    Method: POST
+    Url: https://127.0.0.1:5986/wsman
+    Headers: {}
+    Body: >-
+      <?xml version="1.0" encoding="utf-16"?>
+
+      <env:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsmid="http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+        <env:Header />
+        <env:Body>
+          <wsmid:Identify />
+        </env:Body>
+      </env:Envelope>
+  Response:
+    StatusCode: 200
+    Headers:
+      Server: Microsoft-HTTPAPI/2.0
+      Date: Fri, 09 May 2025 16:30:19 GMT
+    Body: >-
+      <s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope">
+        <s:Header></s:Header>
+        <s:Body>
+          <wsmid:IdentifyResponse xmlns:wsmid="http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd">
+            <wsmid:ProtocolVersion>http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd</wsmid:ProtocolVersion>
+            <wsmid:ProductVendor>Microsoft Corporation</wsmid:ProductVendor>
+            <wsmid:ProductVersion>OS: 10.0.14393 SP: 0.0 Stack: 3.0</wsmid:ProductVersion>
+            <wsmid:SecurityProfiles>
+              <wsmid:SecurityProfileName>http://schemas.dmtf.org/wbem/wsman/1/wsman/secprofile/http/basic</wsmid:SecurityProfileName>
+              <wsmid:SecurityProfileName>http://schemas.dmtf.org/wbem/wsman/1/wsman/secprofile/http/spnego-kerberos</wsmid:SecurityProfileName>
+            </wsmid:SecurityProfiles>
+          </wsmid:IdentifyResponse>
+        </s:Body>
+      </s:Envelope>

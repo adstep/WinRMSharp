@@ -7,7 +7,7 @@ namespace WinRMSharp.Utils
         public static string ComputeSecurehash(string filePath)
         {
             using SHA1 sha1 = SHA1.Create();
-            using FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            using FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             byte[] hashBytes = sha1.ComputeHash(fileStream);
             return BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLowerInvariant();
         }

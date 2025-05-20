@@ -92,5 +92,13 @@
         /// </summary>
         /// <param name="shellId">The shell id on the remote machine. See <see cref="OpenShell"/>.</param>
         Task CloseShell(string shellId);
+
+        /// <summary>
+        /// Retrieves identification information from the remote machine.
+        /// </summary>
+        /// <returns>
+        /// The identification information.
+        /// </returns>
+        Task<IdentifyResponse> Identify();
     }
 }
